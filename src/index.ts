@@ -1,4 +1,5 @@
 import { writeFileSync } from "fs";
+import { join } from "path";
 
 import { ChatCompletionRequestMessage } from "openai";
 import Spinnies from "spinnies";
@@ -10,8 +11,9 @@ import { config } from "./config/config";
 
 import { chat } from "./utils/openai";
 import { PostStructure } from "./interface/structure";
+import slugify from "slugify";
 
-(async () => {
+const write = async (title: string) => {
   const begin = Date.now();
 
   const spinner = new Spinnies({
@@ -25,12 +27,14 @@ import { PostStructure } from "./interface/structure";
     succeedPrefix: "✅",
   });
 
-  spinner.add("structure", { text: "🏗️ Building Structure" });
+  spinner.add("structure", {
+    text: `🏗️ Building Structure for ${title.slice(0, 10)}...`,
+  });
 
   let messages: ChatCompletionRequestMessage[] = [
     {
       role: "user",
-      content: config.structure.replaceAll("{{title}}", config.postTitle),
+      content: config.structure.replaceAll("{{title}}", title),
     },
   ];
 
@@ -94,7 +98,14 @@ import { PostStructure } from "./interface/structure";
 
   spinner.succeed("content");
 
-  writeFileSync("./content.mdx", postContent.join("\n\n"));
+  const postFile = join(
+    __dirname,
+    "..",
+    "output",
+    `${slugify(title.slice(0, 10))}.mdx`
+  );
+
+  writeFileSync(postFile, postContent.join("\n\n"));
 
   const end = Date.now();
 
@@ -103,4 +114,10 @@ import { PostStructure } from "./interface/structure";
   });
   spinner.succeed("finish");
   spinner.stopAll();
+};
+
+(async () => {
+  for (const title of config.titles) {
+    await write(title);
+  }
 })();
