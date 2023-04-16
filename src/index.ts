@@ -30,7 +30,7 @@ import { PostStructure } from "./interface/structure";
   let messages: ChatCompletionRequestMessage[] = [
     {
       role: "user",
-      content: config.structure,
+      content: config.structure.replaceAll("{{title}}", config.postTitle),
     },
   ];
 
@@ -44,7 +44,7 @@ import { PostStructure } from "./interface/structure";
   }
 
   const structure = JSON.parse(response) as PostStructure;
-  let postContent: string[] = [];
+  let postContent: string[] = [`# ${structure.title}`];
 
   messages = [
     {
@@ -58,7 +58,7 @@ import { PostStructure } from "./interface/structure";
   ];
 
   spinner.add("content", {
-    text: "✍️ Generating Content!",
+    text: "✍️ Generating Content",
     indent: 2,
   });
 
@@ -76,19 +76,20 @@ import { PostStructure } from "./interface/structure";
 
     if (!contentResponse) {
       spinner.add("error", {
-        text: `😓 Heading: ${content.heading.slice(0, 20)}... Failed!`,
+        text: `😓 Heading: ${content.heading.slice(0, 20)}... Failed`,
         indent: 2,
       });
       spinner.fail("error");
       spinner.remove("error");
+      continue;
     }
 
     messages.push({
       role: "assistant",
-      content: response,
+      content: contentResponse,
     });
 
-    postContent.push(response);
+    postContent.push(contentResponse);
   }
 
   spinner.succeed("content");
