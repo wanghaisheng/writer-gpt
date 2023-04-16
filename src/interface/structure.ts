@@ -1,7 +1,8 @@
 export type PostStructure = {
   title: string;
-  structure: {
+  introduction: string;
+  sections: {
     heading: string;
-    content: string;
+    subpoints: string[];
   }[];
 };
