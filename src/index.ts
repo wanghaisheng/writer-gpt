@@ -94,7 +94,7 @@ import { PostStructure } from "./interface/structure";
 
   spinner.succeed("content");
 
-  writeFileSync("./content.md", postContent.join("\n\n"));
+  writeFileSync("./content.mdx", postContent.join("\n\n"));
 
   const end = Date.now();
 
