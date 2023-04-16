@@ -1,1 +1,18 @@
-Write a blog post structure with the title: {{title}}
+Generate a good blog outline for a post about {{title}} like the following structure:
+Title: The heading or main topic of the blog post.
+Introduction: A brief overview of the blog post and a hook to engage the reader.
+Subheadings or Sections: These are the main divisions within the blog post, each focusing on a specific aspect of the topic.
+Subpoints or Subsections: These are the subdivisions within each section, providing more detailed information about the topic.
+Conclusion: A summary of the blog post, offering final thoughts or a call-to-action for the reader.
+
+response with a json structure like bellow:
+{
+  "title": "Post title",
+  "introduction": "Briefly introduce",
+  "sections": [
+    {
+      "heading": "heading title",
+      "subpoints": ["list of subpoints"]
+    },
+  ]
+}
