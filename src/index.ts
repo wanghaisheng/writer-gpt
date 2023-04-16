@@ -28,7 +28,7 @@ const write = async (title: string) => {
   });
 
   spinner.add("structure", {
-    text: `🏗️ Building Structure for ${title.slice(0, 10)}...`,
+    text: `🏗️  Building Structure for ${title.slice(0, 20)}...`,
   });
 
   let messages: ChatCompletionRequestMessage[] = [
@@ -62,7 +62,7 @@ const write = async (title: string) => {
   ];
 
   spinner.add("content", {
-    text: "✍️ Generating Content",
+    text: "✍️  Generating Content",
     indent: 2,
   });
 
@@ -80,7 +80,7 @@ const write = async (title: string) => {
 
     if (!contentResponse) {
       spinner.add("error", {
-        text: `😓 Heading: ${content.heading.slice(0, 20)}... Failed`,
+        text: `😓  Heading: ${content.heading.slice(0, 20)}... Failed`,
         indent: 2,
       });
       spinner.fail("error");
@@ -102,7 +102,7 @@ const write = async (title: string) => {
     __dirname,
     "..",
     "output",
-    `${slugify(title.slice(0, 10))}.mdx`
+    `${slugify(title.slice(0, 20))}.mdx`
   );
 
   writeFileSync(postFile, postContent.join("\n\n"));
@@ -110,7 +110,7 @@ const write = async (title: string) => {
   const end = Date.now();
 
   spinner.add("finish", {
-    text: `🚩 Finished in: ${moment.utc(end - begin).format("HH:mm:ss")}`,
+    text: `🚩  Finished in: ${moment.utc(end - begin).format("HH:mm:ss")}`,
   });
   spinner.succeed("finish");
   spinner.stopAll();
