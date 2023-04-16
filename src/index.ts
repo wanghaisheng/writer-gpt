@@ -1,23 +1,31 @@
-import { Configuration, OpenAIApi } from "openai";
-import { config } from "dotenv";
+import ora from "ora";
 
-config();
+import { config } from "./config/config";
+
+import { PostStructure } from "./interface/structure";
+
+import { chat } from "./utils/openai";
 
 (async () => {
-  const configuration = new Configuration({
-    apiKey: process.env.OPENAI_KEY,
+  const spinner = ora("Loading unicorns").start();
+
+  spinner.text = "Building Structure";
+
+  const response = await chat<PostStructure>({
+    messages: [
+      {
+        role: "system",
+        content: config.ai,
+      },
+      {
+        role: "user",
+        content: config.structure,
+      },
+    ],
   });
 
-  const openai = new OpenAIApi(configuration);
-
-  try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: "Hello world",
-    });
-
-    console.log(completion.data.choices[0].text);
-  } catch (error) {
-    console.log((error as any).response);
+  if (!response) {
+    spinner.fail("Failed to create structure!");
+    return;
   }
 })();

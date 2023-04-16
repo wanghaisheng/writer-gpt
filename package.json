@@ -11,7 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
-    "openai": "^3.2.1"
+    "openai": "^3.2.1",
+    "ora": "^6.3.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",
