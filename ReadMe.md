@@ -8,6 +8,8 @@ Install [NodeJS](https://nodejs.org/en), and run in terminal:
 npm i
 ```
 
+Rename .env.example to .env and add OpenAI API Key
+
 ## 🏃 Run
 
 Add List of post titles in file **src/data/list.yaml** example:
@@ -22,3 +24,5 @@ Run on terminal command:
 ```sh
 npm start
 ```
+
+View In folder Output the content
