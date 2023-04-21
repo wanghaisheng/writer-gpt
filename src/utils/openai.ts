@@ -21,5 +21,7 @@ export const chat = async ({
     });
 
     return completion.data.choices[0].message?.content;
-  } catch (error) {}
+  } catch (error) {
+    console.log((error as any).response.data.error.message);
+  }
 };

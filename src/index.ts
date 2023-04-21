@@ -5,6 +5,8 @@ import { ChatCompletionRequestMessage } from "openai";
 import Spinnies from "spinnies";
 import moment from "moment";
 
+import dotenv from "dotenv";
+
 import { config } from "./config/config";
 
 // import { PostStructure } from "./interface/structure";
@@ -12,6 +14,8 @@ import { config } from "./config/config";
 import { chat } from "./utils/openai";
 import { PostStructure } from "./interface/structure";
 import slugify from "slugify";
+
+dotenv.config();
 
 const write = async (title: string) => {
   const begin = Date.now();
@@ -44,6 +48,14 @@ const write = async (title: string) => {
 
   if (!response) {
     spinner.succeed("structure");
+
+    const end = Date.now();
+
+    spinner.add("finish", {
+      text: `💀 Failed in: ${moment.utc(end - begin).format("HH:mm:ss")}`,
+    });
+    spinner.fail("finish");
+    spinner.stopAll();
     return;
   }
 
@@ -102,7 +114,7 @@ const write = async (title: string) => {
     __dirname,
     "..",
     "output",
-    `${slugify(title.slice(0, 20))}.mdx`
+    `${slugify(title, { lower: true, trim: true })}.md`
   );
 
   writeFileSync(postFile, postContent.join("\n\n"));
