@@ -9,8 +9,6 @@ import dotenv from "dotenv";
 
 import { config } from "./config/config";
 
-// import { PostStructure } from "./interface/structure";
-
 import { chat } from "./utils/openai";
 import { PostStructure } from "./interface/structure";
 import slugify from "slugify";
@@ -60,7 +58,9 @@ const write = async (title: string) => {
   }
 
   const structure = JSON.parse(response) as PostStructure;
-  let postContent: string[] = [`# ${structure.title}`];
+  let postContent: string[] = [
+    `# ${structure.title}\n\n ## Introduction\n${structure.introduction}`,
+  ];
 
   messages = [
     {
@@ -77,6 +77,13 @@ const write = async (title: string) => {
     text: "✍️  Generating Content",
     indent: 2,
   });
+
+  const postFile = join(
+    __dirname,
+    "..",
+    "output",
+    `${slugify(title, { lower: true, trim: true })}.md`
+  );
 
   for (const content of structure.sections) {
     messages.push({
@@ -106,18 +113,22 @@ const write = async (title: string) => {
     });
 
     postContent.push(contentResponse);
+    writeFileSync(postFile, postContent.join("\n\n"));
   }
 
-  spinner.succeed("content");
+  const faqContent = structure.faq
+    .map(
+      ({ question, answer }, index) =>
+        `${index + 1}. **${question}**\n${answer}`
+    )
+    .join("\n\n");
+  postContent.push(`## FAQ:\n\n${faqContent}`);
 
-  const postFile = join(
-    __dirname,
-    "..",
-    "output",
-    `${slugify(title, { lower: true, trim: true })}.md`
-  );
+  postContent.push(`## Conclusion:\n\n${structure.conclusion}`);
 
   writeFileSync(postFile, postContent.join("\n\n"));
+
+  spinner.succeed("content");
 
   const end = Date.now();
 

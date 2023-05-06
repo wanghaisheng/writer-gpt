@@ -5,4 +5,9 @@ export type PostStructure = {
     heading: string;
     subpoints: string[];
   }[];
+  faq: {
+    question: string;
+    answer: string;
+  }[];
+  conclusion: string;
 };

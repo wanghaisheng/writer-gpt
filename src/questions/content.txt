@@ -1,2 +1,3 @@
-write at least 400 words for the heading {{heading}}, with the following subpoints: {{subpoints}}.
-responde in markdown, for heading use ## and for subpoints ###
+Write highly detailed and informative paragraphs for {{heading}}, with subpoints including a lot of details, evidence or examples: {{subpoints}}. Make it a first-person narrative. Add personal insights. Incorporate humor into writing. Include markdown tables and bullet points or numbered list when possible.
+respond in markdown, for heading use ## and for subpoints ###
+Respond with max 200 words

@@ -25,4 +25,4 @@ Run on terminal command:
 npm start
 ```
 
-View In folder Output the content
+View In folder Output the content. [Example](output/cloudflare-worker.md)

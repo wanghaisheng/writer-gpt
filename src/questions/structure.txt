@@ -1,9 +1,11 @@
-Generate a good blog outline for a post about {{title}} like the following structure:
-Title: The heading or main topic of the blog post.
-Introduction: A brief overview of the blog post and a hook to engage the reader.
-Subheadings or Sections: These are the main divisions within the blog post, each focusing on a specific aspect of the topic.
-Subpoints or Subsections: These are the subdivisions within each section, providing more detailed information about the topic.
-Conclusion: A summary of the blog post, offering final thoughts or a call-to-action for the reader.
+Write a creative outline on {{title}} like the following structure:
+Title (should be attention-grabbing, descriptive)
+Introduction (introduction should be engaging, hooking the reader, providing context)
+Section (It should have a clear and descriptive heading that tells the reader what the section is about)
+Subpoints (are smaller, more specific pieces of information that support the main points within a section of a blog post)
+Conclusion (should be a brief summary of the main points discussed in the post, as well as a call to action or final thoughts).
+
+Write at least 10 sections, 3 subpoints each and 6 faq.
 
 response with a json structure like bellow:
 {
@@ -14,5 +16,12 @@ response with a json structure like bellow:
       "heading": "heading title",
       "subpoints": ["list of subpoints"]
     },
-  ]
+  ],
+  "faq":[
+    {
+      "question": "Faq Question",
+      "answer": "Question Answer",
+    }
+  ],
+  "conclusion": "Post conclusion"
 }
