@@ -11,7 +11,10 @@ import { config } from "./config/config";
 
 import { chat } from "./utils/openai";
 import { PostStructure } from "./interface/structure";
+import { Bard } from "googlebard";
+
 import slugify from "slugify";
+import { BARD_KEY } from "./config/env";
 
 dotenv.config();
 
@@ -140,7 +143,16 @@ const write = async (title: string) => {
 };
 
 (async () => {
-  for (const title of config.titles) {
-    await write(title);
-  }
+  // for (const title of config.titles) {
+  //   await write(title);
+  // }
+})();
+
+(async () => {
+  // for (const title of config.titles) {
+  //   await write(title);
+  // }
+  // let bot = new Bard(BARD_KEY);
+  // let response = await bot.ask("Hello?");
+  // console.log(response);
 })();

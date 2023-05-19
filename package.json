@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.0.3",
+    "googlebard": "^1.0.6",
     "js-yaml": "^4.1.0",
     "moment": "^2.29.4",
     "openai": "^3.2.1",
