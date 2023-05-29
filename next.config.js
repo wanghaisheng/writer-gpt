@@ -32,6 +32,7 @@ const generateAppDirEntry = entry => {
  */
 const nextConfig = {
   reactStrictMode: true,
+  output: isDev ? "standalone" : "export",
   webpack: config => {
     if (isDev) return config;
 
