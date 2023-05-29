@@ -6,7 +6,7 @@ type Props = {};
 
 const HomePage = (props: Props) => {
   return (
-    <main className="flex flex-col items-center justify-center gap-y-3 h-screen">
+    <main className="container flex flex-col items-center justify-center gap-y-3 h-screen">
       <Form />
     </main>
   );
