@@ -1,27 +1,25 @@
 {
   "name": "writer-gpt",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/index.ts",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "start": "ts-node src/index.ts"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.0.3",
-    "googlebard": "^1.0.6",
-    "js-yaml": "^4.1.0",
-    "moment": "^2.29.4",
-    "openai": "^3.2.1",
-    "slugify": "^1.6.6",
-    "spinnies": "^0.5.1"
-  },
-  "devDependencies": {
-    "@types/js-yaml": "^4.0.5",
-    "@types/spinnies": "^0.5.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "@types/node": "20.2.5",
+    "@types/react": "18.2.7",
+    "@types/react-dom": "18.2.4",
+    "autoprefixer": "10.4.14",
+    "eslint": "8.41.0",
+    "eslint-config-next": "13.4.4",
+    "next": "13.4.4",
+    "postcss": "8.4.24",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwindcss": "3.3.2",
+    "typescript": "5.0.4"
   }
 }
