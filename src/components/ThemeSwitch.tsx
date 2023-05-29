@@ -29,6 +29,7 @@ const ThemeSwitch = ({ className, ...props }: ButtonProps) => {
             : "light"
         )
       }
+      className="rounded-full"
       {...props}
     >
       {theme === "light" || systemTheme === "light" ? <Moon /> : <Sun />}

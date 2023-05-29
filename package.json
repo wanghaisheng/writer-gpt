@@ -16,6 +16,7 @@
     "serve": "npm run build && npm start"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.1.0",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@trivago/prettier-plugin-sort-imports": "^4.1.1",
@@ -23,11 +24,11 @@
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "10.4.14",
-    "axios": "^1.4.0",
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
+    "eventsource-parser": "^1.0.0",
     "lucide-react": "^0.224.0",
     "moment": "^2.29.4",
     "next": "13.4.4",
