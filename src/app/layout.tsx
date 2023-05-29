@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 
 import { MetaData } from "@config/seo";
 
+import { HOC } from "@components/HOC";
+
 import "@styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -16,7 +18,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <HOC>{children}</HOC>
+      </body>
     </html>
   );
 }

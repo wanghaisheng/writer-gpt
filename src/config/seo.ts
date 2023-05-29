@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-const title: Metadata["title"] = "Writer GPT";
+export const title = "Writer GPT";
 export const url = "https://writer-gpt.com/";
 
 export const MetaData: Metadata = {
