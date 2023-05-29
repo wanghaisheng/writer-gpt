@@ -1,25 +1,48 @@
 {
   "name": "writer-gpt",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "author": {
+    "name": "Valentin Lica",
+    "email": "licavalentinh@gmail.com",
+    "url": "https://github.com/ValentinHLica"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write \"./**/*.{ts,tsx,json}\"",
+    "serve": "npm run build && npm start"
   },
   "dependencies": {
+    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "10.4.14",
+    "axios": "^1.4.0",
+    "class-variance-authority": "^0.6.0",
+    "clsx": "^1.2.1",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.4",
+    "lucide-react": "^0.224.0",
+    "moment": "^2.29.4",
     "next": "13.4.4",
+    "next-pwa": "^5.6.0",
+    "next-themes": "^0.2.1",
     "postcss": "8.4.24",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.44.2",
+    "tailwind-merge": "^1.12.0",
     "tailwindcss": "3.3.2",
-    "typescript": "5.0.4"
+    "tailwindcss-animate": "^1.0.5",
+    "typescript": "5.0.4",
+    "zod": "^3.21.4",
+    "zustand": "^4.3.8"
+  },
+  "devDependencies": {
+    "prettier": "^2.8.8"
   }
 }
