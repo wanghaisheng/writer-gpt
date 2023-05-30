@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Circle, Loader2, Play } from "lucide-react";
+import { AlertTriangle, Circle, Loader2, Play } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -17,6 +17,7 @@ import ThemeSwitch from "@components/ThemeSwitch";
 import { TokenForm } from "@components/Token";
 import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
+import { Separator } from "@components/ui/separator";
 import { Skeleton } from "@components/ui/skeleton";
 import { Textarea } from "@components/ui/textarea";
 
@@ -114,10 +115,20 @@ const Form = (props: Props) => {
 
   return (
     <div className="flex flex-col w-full max-w-3xl gap-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold flex items-center">
-          <Circle className="fill-blue-600 stroke-blue-600 mr-2" /> {title}
-        </h1>
+      <div className="flex flex-col-reverse sm:flex-row items-center justify-center sm:justify-between gap-4">
+        <div className="flex items-center flex-col sm:flex-row gap-4">
+          <h1 className="text-2xl font-semibold flex items-center">
+            <Circle className="fill-blue-600 stroke-blue-600 mr-2" /> {title}
+          </h1>
+
+          <Separator orientation="vertical" className="h-8 hidden sm:flex" />
+          <Separator orientation="horizontal" className="sm:hidden" />
+
+          <p className="flex items-center">
+            <AlertTriangle className="text-yellow-600 mr-2" /> Under
+            Construction
+          </p>
+        </div>
 
         <ThemeSwitch />
       </div>
@@ -200,7 +211,12 @@ const Form = (props: Props) => {
           )}
         </div>
 
-        <Button type="submit" variant="blue" className="md:col-start-6">
+        <Button
+          type="submit"
+          variant="blue"
+          className="md:col-start-6"
+          disabled
+        >
           <Play className="w-6 h-6 mr-2" /> Generate
         </Button>
       </form>
