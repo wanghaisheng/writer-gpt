@@ -1,22 +1,23 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { List, Loader2, ScrollText } from "lucide-react";
+import { Circle, Loader2, Play } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { apiURL, structure } from "@config/chat";
+import { keywordsCommand, structure } from "@config/chat";
 import { title } from "@config/seo";
 
-import { OpenAIStreamPayload } from "@interface/openai";
-
+import { useSettings } from "@store/settings";
 import { useToken } from "@store/token";
 
+import { SettingsMenu } from "@components/SettingsMenu";
 import ThemeSwitch from "@components/ThemeSwitch";
 import { TokenForm } from "@components/Token";
 import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
+import { Skeleton } from "@components/ui/skeleton";
 import { Textarea } from "@components/ui/textarea";
 
 import { chat } from "@lib/openai";
@@ -32,6 +33,7 @@ type Props = {};
 
 const Form = (props: Props) => {
   const { token } = useToken();
+  const { settings, setSettings } = useSettings();
 
   const [loadingKeyWords, setLoadingKeyWords] = useState<boolean>(false);
   const [loadingOutline, setLoadingOutline] = useState<boolean>(false);
@@ -41,7 +43,8 @@ const Form = (props: Props) => {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors }
+    formState: { errors },
+    trigger
   } = useForm<GenerateContent>({
     resolver: zodResolver(generateContent)
   });
@@ -53,10 +56,34 @@ const Form = (props: Props) => {
 
     setLoadingKeyWords(true);
 
+    try {
+      const response = await chat({
+        key: token,
+        model: settings.model.keywords,
+        messages: [
+          {
+            role: "user",
+            content:
+              settings?.custom?.keywords ??
+              keywordsCommand.replaceAll("{{keywords}}", keywords)
+          }
+        ]
+      });
+
+      if (response) setValue("keywords", `${keywords}\n${response}`);
+    } catch (error) {
+      // Handle fetch request errors
+    }
+
     setLoadingKeyWords(false);
   };
 
   const onGenerateOutline = async () => {
+    if (!keywords || (keywords && keywords.trim().length === 0)) {
+      trigger("keywords", { shouldFocus: true });
+      return;
+    }
+
     if (!token) return;
 
     setLoadingOutline(true);
@@ -64,10 +91,13 @@ const Form = (props: Props) => {
     try {
       const response = await chat({
         key: token,
+        model: settings.model.outline,
         messages: [
           {
             role: "user",
-            content: structure.replaceAll("{{keywords}}", keywords)
+            content:
+              settings?.custom?.outline ??
+              structure.replaceAll("{{keywords}}", keywords)
           }
         ]
       });
@@ -83,39 +113,50 @@ const Form = (props: Props) => {
   const onSubmit = handleSubmit(payload => {});
 
   return (
-    <div className="flex flex-col w-full max-w-md gap-8">
+    <div className="flex flex-col w-full max-w-3xl gap-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold">✨ 🤖 {title} ✨ </h1>
+        <h1 className="text-2xl font-semibold flex items-center">
+          <Circle className="fill-blue-600 stroke-blue-600 mr-2" /> {title}
+        </h1>
 
         <ThemeSwitch />
       </div>
 
       <TokenForm />
 
-      <form className="flex flex-col gap-4 w-full flex-1" onSubmit={onSubmit}>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="keywords">Keywords</Label>
+      <form
+        className="grid md:grid-cols-6 gap-4 w-full flex-1"
+        onSubmit={onSubmit}
+      >
+        <div className="flex flex-col gap-2 md:col-span-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="keywords">Keywords</Label>
+
+            <SettingsMenu
+              onGenerate={onGenerateKeywords}
+              loadingGenerate={loadingKeyWords}
+              onRegenerate={() => {}}
+              loadingRegenerate={false}
+              onModel={model => {
+                setSettings({
+                  ...settings,
+                  model: {
+                    ...settings.model,
+                    keywords: model
+                  }
+                });
+              }}
+              onPrompt={() => {}}
+              selectedModel={settings.model.keywords}
+            />
+          </div>
 
           <Textarea
-            disabled={loadingKeyWords}
+            disabled={loadingKeyWords || !token}
             id="keywords"
             placeholder="Keyword 1..."
-            action={
-              <Button
-                size="sm"
-                className="rounded-full"
-                type="button"
-                disabled={loadingKeyWords}
-                onClick={onGenerateKeywords}
-              >
-                {loadingKeyWords ? (
-                  <Loader2 className="animate-spin mr-2 w-5 h-6" />
-                ) : (
-                  <List className="w-5 h-5 mr-2" />
-                )}
-                Generate
-              </Button>
-            }
+            actions={loadingKeyWords && <Skeleton />}
+            error={!!errors?.keywords}
             {...register("keywords")}
           />
 
@@ -124,29 +165,33 @@ const Form = (props: Props) => {
           )}
         </div>
 
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="outline">Outline</Label>
+        <div className="flex flex-col gap-2 md:col-span-4">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="outline">Outline</Label>
+
+            <SettingsMenu
+              onGenerate={onGenerateOutline}
+              loadingGenerate={loadingOutline}
+              onRegenerate={() => {}}
+              loadingRegenerate={false}
+              onModel={model => {
+                setSettings({
+                  ...settings,
+                  model: {
+                    ...settings.model,
+                    outline: model
+                  }
+                });
+              }}
+              onPrompt={() => {}}
+              selectedModel={settings.model.outline}
+            />
+          </div>
 
           <Textarea
-            disabled={loadingOutline}
+            disabled={loadingOutline || !token}
             id="outline"
             placeholder="Introduction..."
-            action={
-              <Button
-                size="sm"
-                className="rounded-full"
-                type="button"
-                disabled={loadingOutline}
-                onClick={onGenerateOutline}
-              >
-                {loadingOutline ? (
-                  <Loader2 className="animate-spin mr-2 w-5 h-6" />
-                ) : (
-                  <ScrollText className="w-5 h-5 mr-2" />
-                )}
-                Generate
-              </Button>
-            }
             {...register("outline")}
           />
 
@@ -155,7 +200,9 @@ const Form = (props: Props) => {
           )}
         </div>
 
-        <Button type="submit">Generate</Button>
+        <Button type="submit" variant="blue" className="md:col-start-6">
+          <Play className="w-6 h-6 mr-2" /> Generate
+        </Button>
       </form>
     </div>
   );

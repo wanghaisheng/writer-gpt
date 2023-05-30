@@ -13,6 +13,10 @@ Conclusion (should be a brief summary of the main points discussed in the post, 
 Write at least 10 sections, 3 subpoints each and 6 faq.
 `;
 
+export const keywordsCommand = `
+Please give more related keywords to this list: {{keywords}}. respond with only the keywords separated my newline
+`;
+
 export const system = `You are a wise expert writer who shares an abundance of detail and information on a topic ranging from high level overviews to niche subtopics all the way down to rarely known small details.`;
 
 export const apiURL = "https://api.openai.com/v1/chat/completions";

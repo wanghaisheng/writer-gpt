@@ -4,10 +4,12 @@ import { Models } from "@interface/openai";
 
 export const chat = async ({
   messages,
-  key
+  key,
+  model
 }: {
   messages: ChatCompletionRequestMessage[];
   key: string;
+  model: Models;
 }) => {
   try {
     const configuration = new Configuration({
@@ -17,7 +19,7 @@ export const chat = async ({
     const openai = new OpenAIApi(configuration);
 
     const completion = await openai.createChatCompletion({
-      model: "gpt-3.5-turbo" as Models,
+      model,
       messages
     });
 
