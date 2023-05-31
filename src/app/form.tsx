@@ -147,7 +147,7 @@ const Form = (props: Props) => {
               onGenerate={onGenerateKeywords}
               loadingGenerate={loadingKeyWords}
               onRegenerate={() => {}}
-              loadingRegenerate={false}
+              loadingRegenerate={true}
               onModel={model => {
                 setSettings({
                   ...settings,
@@ -157,7 +157,16 @@ const Form = (props: Props) => {
                   }
                 });
               }}
-              onPrompt={() => {}}
+              customPrompt={settings.custom.keywords}
+              onPrompt={prompt =>
+                setSettings({
+                  ...settings,
+                  custom: {
+                    ...settings,
+                    keywords: prompt
+                  }
+                })
+              }
               selectedModel={settings.model.keywords}
             />
           </div>
@@ -184,7 +193,7 @@ const Form = (props: Props) => {
               onGenerate={onGenerateOutline}
               loadingGenerate={loadingOutline}
               onRegenerate={() => {}}
-              loadingRegenerate={false}
+              loadingRegenerate={true}
               onModel={model => {
                 setSettings({
                   ...settings,
@@ -194,7 +203,16 @@ const Form = (props: Props) => {
                   }
                 });
               }}
-              onPrompt={() => {}}
+              customPrompt={settings.custom.outline}
+              onPrompt={prompt =>
+                setSettings({
+                  ...settings,
+                  custom: {
+                    ...settings,
+                    outline: prompt
+                  }
+                })
+              }
               selectedModel={settings.model.outline}
             />
           </div>
