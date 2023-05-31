@@ -1,17 +1,18 @@
 "use client";
 
 import * as React from "react";
+import { Loader2 } from "lucide-react";
 
 import { cn } from "@lib/utils";
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
-  actions?: React.ReactNode;
+  loading?: boolean;
   error?: boolean;
 }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, actions, error, ...props }, ref) => {
+  ({ className, loading, error, ...props }, ref) => {
     return (
       <div className="relative w-full flex-1">
         <textarea
@@ -24,7 +25,11 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           {...props}
         />
 
-        {actions}
+        {loading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-slate-100/40 dark:bg-slate-900/60 cursor-wait">
+            <Loader2 className="w-8 h-8 animate-spin" />
+          </div>
+        )}
       </div>
     );
   }

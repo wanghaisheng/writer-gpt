@@ -48,6 +48,7 @@ type Props = {
   selectedModel?: Models;
   onModel: (model: Models) => void;
 
+  promptPlaceholder?: string;
   customPrompt?: string;
   onPrompt: (prompt?: string) => void;
 };
@@ -76,6 +77,7 @@ export const SettingsMenu = ({
   selectedModel,
   onModel,
 
+  promptPlaceholder,
   customPrompt,
   onPrompt
 }: Props) => {
@@ -153,7 +155,7 @@ export const SettingsMenu = ({
           <Textarea
             value={prompt}
             onChange={e => setPrompt(e.target.value)}
-            placeholder="Prompt..."
+            placeholder={promptPlaceholder ?? "Prompt..."}
           />
 
           <DialogFooter>

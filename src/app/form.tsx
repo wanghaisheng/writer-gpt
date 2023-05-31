@@ -1,12 +1,12 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertTriangle, Circle, Loader2, Play } from "lucide-react";
+import { AlertTriangle, Circle, Play } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { keywordsCommand, structure } from "@config/chat";
+import { keywordsCommand, keywordsSystem, structure } from "@config/chat";
 import { title } from "@config/seo";
 
 import { useSettings } from "@store/settings";
@@ -18,7 +18,6 @@ import { TokenForm } from "@components/Token";
 import { Button } from "@components/ui/button";
 import { Label } from "@components/ui/label";
 import { Separator } from "@components/ui/separator";
-import { Skeleton } from "@components/ui/skeleton";
 import { Textarea } from "@components/ui/textarea";
 
 import { chat } from "@lib/openai";
@@ -52,6 +51,8 @@ const Form = (props: Props) => {
 
   const [keywords, outline] = watch(["keywords", "outline"]);
 
+  const noKeywords = (keywords ?? "").trim().length === 0;
+
   const onGenerateKeywords = async () => {
     if (!token) return;
 
@@ -63,15 +64,21 @@ const Form = (props: Props) => {
         model: settings.model.keywords,
         messages: [
           {
+            role: "system",
+            content: keywordsSystem
+          },
+          {
             role: "user",
-            content:
-              settings?.custom?.keywords ??
-              keywordsCommand.replaceAll("{{keywords}}", keywords)
+            content: (settings?.custom?.keywords ?? keywordsCommand).replaceAll(
+              "{{keywords}}",
+              keywords
+            )
           }
         ]
       });
 
-      if (response) setValue("keywords", `${keywords}\n${response}`);
+      if (response)
+        setValue("keywords", `${keywords ? `${keywords}\n` : ""}${response}`);
     } catch (error) {
       // Handle fetch request errors
     }
@@ -144,10 +151,11 @@ const Form = (props: Props) => {
             <Label htmlFor="keywords">Keywords</Label>
 
             <SettingsMenu
+              loadingGenerate={loadingKeyWords || noKeywords}
               onGenerate={onGenerateKeywords}
-              loadingGenerate={loadingKeyWords}
-              onRegenerate={() => {}}
               loadingRegenerate={true}
+              onRegenerate={() => {}}
+              selectedModel={settings.model.keywords}
               onModel={model => {
                 setSettings({
                   ...settings,
@@ -157,6 +165,7 @@ const Form = (props: Props) => {
                   }
                 });
               }}
+              promptPlaceholder="Please write related keywords to boats..."
               customPrompt={settings.custom.keywords}
               onPrompt={prompt =>
                 setSettings({
@@ -167,16 +176,15 @@ const Form = (props: Props) => {
                   }
                 })
               }
-              selectedModel={settings.model.keywords}
             />
           </div>
 
           <Textarea
-            disabled={loadingKeyWords || !token}
+            disabled={!token}
             id="keywords"
-            placeholder="Keyword 1..."
-            actions={loadingKeyWords && <Skeleton />}
+            placeholder="- Keyword 1..."
             error={!!errors?.keywords}
+            loading={loadingKeyWords}
             {...register("keywords")}
           />
 
@@ -190,10 +198,11 @@ const Form = (props: Props) => {
             <Label htmlFor="outline">Outline</Label>
 
             <SettingsMenu
+              loadingGenerate={loadingOutline || noKeywords}
               onGenerate={onGenerateOutline}
-              loadingGenerate={loadingOutline}
-              onRegenerate={() => {}}
               loadingRegenerate={true}
+              onRegenerate={() => {}}
+              selectedModel={settings.model.outline}
               onModel={model => {
                 setSettings({
                   ...settings,
@@ -203,6 +212,7 @@ const Form = (props: Props) => {
                   }
                 });
               }}
+              promptPlaceholder="Please write a creative outline..."
               customPrompt={settings.custom.outline}
               onPrompt={prompt =>
                 setSettings({
@@ -213,14 +223,14 @@ const Form = (props: Props) => {
                   }
                 })
               }
-              selectedModel={settings.model.outline}
             />
           </div>
 
           <Textarea
-            disabled={loadingOutline || !token}
+            disabled={!token || noKeywords}
             id="outline"
             placeholder="Introduction..."
+            loading={loadingOutline}
             {...register("outline")}
           />
 
@@ -229,12 +239,7 @@ const Form = (props: Props) => {
           )}
         </div>
 
-        <Button
-          type="submit"
-          variant="blue"
-          className="md:col-start-6"
-          disabled
-        >
+        <Button type="submit" variant="blue" className="md:col-start-6">
           <Play className="w-6 h-6 mr-2" /> Generate
         </Button>
       </form>
