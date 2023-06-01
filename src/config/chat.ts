@@ -14,7 +14,7 @@ Write at least 10 sections, 3 subpoints each and 6 faq.
 `;
 
 export const keywordsCommand = `
-Please give more related keywords to this list: {{keywords}}
+Please give more related keywords to this list: {{keywords}}, do not repeat the keywords.
 `;
 
 export const keywordsSystem = `
@@ -25,5 +25,3 @@ you will only respond with list of keywords, they should be separated by newline
 `;
 
 export const system = `You are a wise expert writer who shares an abundance of detail and information on a topic ranging from high level overviews to niche subtopics all the way down to rarely known small details.`;
-
-export const apiURL = "https://api.openai.com/v1/chat/completions";
