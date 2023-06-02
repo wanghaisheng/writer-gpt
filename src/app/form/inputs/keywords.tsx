@@ -23,7 +23,7 @@ import { Label } from "@components/ui/label";
 import { Textarea } from "@components/ui/textarea";
 
 import { chat } from "@lib/openai";
-import { hasKeywords } from "@lib/utils";
+import { hasKeywords as hasKeywordsFn } from "@lib/utils";
 
 import { GenerateContent } from "../index";
 
@@ -49,6 +49,7 @@ export const KeyWordsInputs = ({
     useState<boolean>(false);
 
   const keywords = watch("keywords");
+  const hasKeywords = hasKeywordsFn(keywords?.main);
 
   const onGenerateMainKeywords = async () => {
     if (!token) return;
@@ -130,12 +131,8 @@ export const KeyWordsInputs = ({
           <Label htmlFor="keywords">Main Keywords</Label>
 
           <SettingsMenu
-            loadingGenerate={
-              loadingMainKeyWords || !hasKeywords(keywords?.main)
-            }
+            loadingGenerate={loadingMainKeyWords || !hasKeywords}
             onGenerate={onGenerateMainKeywords}
-            loadingRegenerate={true}
-            onRegenerate={() => {}}
             selectedModel={settings.model.keywords.main}
             onModel={model => {
               const settingsCopy = structuredClone(settings);
@@ -169,10 +166,8 @@ export const KeyWordsInputs = ({
           <Label htmlFor="keywords">Secondary Keywords</Label>
 
           <SettingsMenu
-            loadingGenerate={loadingSecondaryKeyWords}
+            loadingGenerate={loadingSecondaryKeyWords || !hasKeywords}
             onGenerate={onGenerateSecondaryKeywords}
-            loadingRegenerate={true}
-            onRegenerate={() => {}}
             selectedModel={settings.model.keywords.secondary}
             onModel={model => {
               const settingsCopy = structuredClone(settings);

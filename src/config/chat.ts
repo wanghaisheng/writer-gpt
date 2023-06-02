@@ -12,6 +12,18 @@ Conclusion (should be a brief summary of the main points discussed in the post, 
 FAQ (list of common questions that people often ask about a particular topic or subject)
 `;
 
+export const outlineRegeneratePromptSystem = `
+you will receive an outline, a selected part of it that you will rewrite, but will keep the same context related to the outline and the format of the selection, only respond with the new rewritten text
+`;
+
+export const outlineRegeneratePrompt = `
+here is the selection:
+{{section}}
+
+here is the outline:
+{{outline}}
+`;
+
 export const keywordsCommand = `
 Please give more related keywords to this list: {{keywords}}, do not repeat the keywords.
 `;
@@ -35,14 +47,6 @@ You are a wise expert writer who shares an abundance of detail and information o
 `;
 
 export const outlineToArraySystemPrompt = `
-you will only respond with json format
-`;
-
-export const outlineToArrayPrompt = `
-Convert this outlines Section and Subpoints into array of objects like this:
-[{ heading: "Section text value", subpoints: ["List of subpoints as string", ...] }, ...]
-
-Outline:
-{{outline}}
-
+you will receive an outline pick the all the headings and subpoints respond with json format like this:
+[{ heading: "string", subpoints: ["string array", ...] }, ...]
 `;

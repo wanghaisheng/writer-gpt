@@ -1,5 +1,7 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
+
 import {
   Bot,
   Pencil,
@@ -9,7 +11,6 @@ import {
   Settings,
   Sparkle
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
 
 import { Models } from "@interface/openai";
 
@@ -42,9 +43,6 @@ type Props = {
   loadingGenerate?: boolean;
   onGenerate: () => void;
 
-  loadingRegenerate?: boolean;
-  onRegenerate: () => void;
-
   selectedModel?: Models;
   onModel: (model: Models) => void;
 
@@ -70,9 +68,6 @@ const modelsList: {
 export const SettingsMenu = ({
   loadingGenerate,
   onGenerate,
-
-  loadingRegenerate,
-  onRegenerate,
 
   selectedModel,
   onModel,
@@ -105,14 +100,6 @@ export const SettingsMenu = ({
           >
             <Sparkle className="mr-2 h-4 w-4" />
             <span>Generate</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            onClick={onRegenerate}
-            disabled={loadingRegenerate || !token}
-          >
-            <Rotate3d className="mr-2 h-4 w-4" />
-            <span>Regenerate</span>
           </DropdownMenuItem>
 
           <DropdownMenuSub>

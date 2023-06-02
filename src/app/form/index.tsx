@@ -12,7 +12,6 @@ import {
   outlineToArraySystemPrompt,
   systemPrompt
 } from "@config/chat";
-import { outlineToArrayPrompt } from "@config/chat";
 import { title } from "@config/seo";
 
 import { PostSection } from "@interface/structure";
@@ -44,6 +43,7 @@ export const Form = () => {
   const { token } = useToken();
   const { settings } = useSettings();
 
+  const [loading, setLoading] = useState<boolean>(false);
   const [postContent, setPostContent] = useState<string>("");
 
   const {
@@ -51,16 +51,24 @@ export const Form = () => {
     handleSubmit,
     setValue,
     watch,
-    formState: { errors },
-    trigger
+    formState: { errors }
   } = useForm<GenerateContent>({
-    resolver: zodResolver(generateContent)
+    resolver: zodResolver(generateContent),
+    defaultValues: {
+      keywords: {
+        main: "",
+        secondary: ""
+      },
+      outline: ""
+    }
   });
 
   const outline = watch("outline");
 
   const onSubmit = handleSubmit(async payload => {
     if (!token) return;
+
+    setLoading(true);
 
     const sections: PostSection[] = [];
 
@@ -75,7 +83,7 @@ export const Form = () => {
           },
           {
             role: "user",
-            content: outlineToArrayPrompt.replace("{{outline}}", outline)
+            content: outline
           }
         ]
       });
@@ -116,6 +124,8 @@ export const Form = () => {
         // Handle fetch request errors
       }
     }
+
+    setLoading(false);
   });
 
   return (
@@ -153,14 +163,13 @@ export const Form = () => {
           register={register}
           setValue={setValue}
           watch={watch}
-          trigger={trigger}
         />
 
         <Button
           type="submit"
           variant="blue"
           className="md:col-start-6"
-          disabled
+          disabled={loading}
         >
           <Play className="w-6 h-6 mr-2" /> Generate
         </Button>
