@@ -107,7 +107,10 @@ export const KeyWordsInputs = ({
             role: "user",
             content: (
               settings?.custom?.keywords?.secondary ?? keywordsCommand
-            ).replaceAll("{{keywords}}", keywords.secondary)
+            ).replaceAll(
+              "{{keywords}}",
+              !!keywords.secondary.trim() ? keywords.secondary : keywords.main
+            )
           }
         ]
       });
