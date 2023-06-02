@@ -70,7 +70,7 @@ export const Form = () => {
 
     setLoading(true);
 
-    const sections: PostSection[] = [];
+    let sections: PostSection[] = [];
 
     try {
       const response = await chat({
@@ -88,7 +88,7 @@ export const Form = () => {
         ]
       });
 
-      console.log(response);
+      sections = response as unknown as PostSection[];
     } catch (error) {
       console.log("Failed to make section structure");
 
@@ -96,33 +96,37 @@ export const Form = () => {
       // Handle fetch request errors
     }
 
-    for (const section of sections) {
-      try {
-        const response = await chat({
-          key: token,
-          model: settings.model.outline,
-          messages: [
-            {
-              role: "system",
-              content: systemPrompt
-            },
-            {
-              role: "assistant",
-              content: outline
-            },
-            {
-              role: "user",
-              content: contentPrompt
-                .replaceAll(`{{heading}}`, section.heading)
-                .replaceAll(`{{subpoints}}`, section.subpoints.join(", "))
-            }
-          ]
-        });
+    try {
+      for (const section of sections) {
+        try {
+          const response = await chat({
+            key: token,
+            model: settings.model.outline,
+            messages: [
+              {
+                role: "system",
+                content: systemPrompt
+              },
+              {
+                role: "assistant",
+                content: outline
+              },
+              {
+                role: "user",
+                content: contentPrompt
+                  .replaceAll(`{{heading}}`, section.heading)
+                  .replaceAll(`{{subpoints}}`, section.subpoints.join(", "))
+              }
+            ]
+          });
 
-        if (response) setPostContent(prevState => `${prevState}${response}`);
-      } catch (error) {
-        // Handle fetch request errors
+          if (response) setPostContent(prevState => `${prevState}${response}`);
+        } catch (error) {
+          // Handle fetch request errors
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
 
     setLoading(false);
@@ -169,7 +173,7 @@ export const Form = () => {
           type="submit"
           variant="blue"
           className="md:col-start-6"
-          disabled={loading}
+          disabled={loading || !outline.trim()}
         >
           <Play className="w-6 h-6 mr-2" /> Generate
         </Button>
