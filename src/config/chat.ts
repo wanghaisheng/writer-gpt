@@ -23,6 +23,13 @@ you will only respond with list of keywords, they should be separated by newline
 - keyword 3
 `;
 
+export const secondaryKeywordsSystem = `
+${keywordsSystem}
+
+Make sure not to include this keywords in the reply: 
+{{keywords}}
+`;
+
 export const systemPrompt = `
 You are a wise expert writer who shares an abundance of detail and information on a topic ranging from high level overviews to niche subtopics all the way down to rarely known small details.
 `;

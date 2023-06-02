@@ -9,7 +9,11 @@ import {
   UseFormWatch
 } from "react-hook-form";
 
-import { keywordsCommand, keywordsSystem } from "@config/chat";
+import {
+  keywordsCommand,
+  keywordsSystem,
+  secondaryKeywordsSystem
+} from "@config/chat";
 
 import { useSettings } from "@store/settings";
 import { useToken } from "@store/token";
@@ -19,6 +23,7 @@ import { Label } from "@components/ui/label";
 import { Textarea } from "@components/ui/textarea";
 
 import { chat } from "@lib/openai";
+import { hasKeywords } from "@lib/utils";
 
 import { GenerateContent } from "../index";
 
@@ -43,9 +48,7 @@ export const KeyWordsInputs = ({
   const [loadingSecondaryKeyWords, setLoadingSecondaryKeyWords] =
     useState<boolean>(false);
 
-  const [keywords] = watch(["keywords"]);
-
-  const noMainKeywords = (keywords.main ?? "").trim().length === 0;
+  const keywords = watch("keywords");
 
   const onGenerateMainKeywords = async () => {
     if (!token) return;
@@ -82,7 +85,7 @@ export const KeyWordsInputs = ({
     setLoadingMainKeyWords(false);
   };
 
-  const onGenerateSecondayKeywords = async () => {
+  const onGenerateSecondaryKeywords = async () => {
     if (!token) return;
 
     setLoadingSecondaryKeyWords(true);
@@ -94,7 +97,10 @@ export const KeyWordsInputs = ({
         messages: [
           {
             role: "system",
-            content: keywordsSystem
+            content: secondaryKeywordsSystem.replace(
+              "{{keywords}}",
+              keywords?.main ?? ""
+            )
           },
           {
             role: "user",
@@ -119,12 +125,14 @@ export const KeyWordsInputs = ({
 
   return (
     <div className="grid md:grid-cols-2 gap-4">
-      <div className="flex flex-col gap-2 md:col-span-2">
+      <div className="flex flex-col gap-2 md:col-span-1">
         <div className="flex items-center justify-between">
           <Label htmlFor="keywords">Main Keywords</Label>
 
           <SettingsMenu
-            loadingGenerate={loadingMainKeyWords || noMainKeywords}
+            loadingGenerate={
+              loadingMainKeyWords || !hasKeywords(keywords?.main)
+            }
             onGenerate={onGenerateMainKeywords}
             loadingRegenerate={true}
             onRegenerate={() => {}}
@@ -152,17 +160,17 @@ export const KeyWordsInputs = ({
           placeholder="- Keyword 1..."
           error={errors?.keywords?.message}
           loading={loadingMainKeyWords}
-          {...register("keywords")}
+          {...register("keywords.main")}
         />
       </div>
 
-      <div className="flex flex-col gap-2 md:col-span-2">
+      <div className="flex flex-col gap-2 md:col-span-1">
         <div className="flex items-center justify-between">
           <Label htmlFor="keywords">Secondary Keywords</Label>
 
           <SettingsMenu
             loadingGenerate={loadingSecondaryKeyWords}
-            onGenerate={onGenerateSecondayKeywords}
+            onGenerate={onGenerateSecondaryKeywords}
             loadingRegenerate={true}
             onRegenerate={() => {}}
             selectedModel={settings.model.keywords.secondary}
@@ -189,7 +197,7 @@ export const KeyWordsInputs = ({
           placeholder="- Keyword 1..."
           error={errors?.keywords?.message}
           loading={loadingSecondaryKeyWords}
-          {...register("keywords")}
+          {...register("keywords.secondary")}
         />
       </div>
     </div>

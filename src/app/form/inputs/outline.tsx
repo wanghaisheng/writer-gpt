@@ -45,7 +45,7 @@ export const OutlineInput = ({
 
   const [keywords, outline] = watch(["keywords", "outline"]);
 
-  const noKeywords = (keywords.main ?? "").trim().length === 0;
+  const noKeywords = (keywords?.main ?? "").trim().length === 0;
 
   const onGenerateOutline = async () => {
     if (
