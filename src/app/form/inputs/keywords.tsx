@@ -64,7 +64,7 @@ export const KeyWordsInputs = ({
           {
             role: "user",
             content: (
-              settings?.custom?.keywords.main ?? keywordsCommand
+              settings?.custom?.keywords?.main ?? keywordsCommand
             ).replaceAll("{{keywords}}", keywords.main)
           }
         ]
@@ -99,7 +99,7 @@ export const KeyWordsInputs = ({
           {
             role: "user",
             content: (
-              settings?.custom?.keywords.secondary ?? keywordsCommand
+              settings?.custom?.keywords?.secondary ?? keywordsCommand
             ).replaceAll("{{keywords}}", keywords.secondary)
           }
         ]
@@ -118,7 +118,7 @@ export const KeyWordsInputs = ({
   };
 
   return (
-    <div className="grid md:grid-cols-2">
+    <div className="grid md:grid-cols-2 gap-4">
       <div className="flex flex-col gap-2 md:col-span-2">
         <div className="flex items-center justify-between">
           <Label htmlFor="keywords">Main Keywords</Label>

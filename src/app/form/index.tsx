@@ -140,10 +140,7 @@ export const Form = () => {
 
       <TokenForm />
 
-      <form
-        className="grid md:grid-cols-6 gap-4 w-full flex-1"
-        onSubmit={onSubmit}
-      >
+      <form className="flex flex-col gap-4 w-full flex-1" onSubmit={onSubmit}>
         <KeyWordsInputs
           errors={errors}
           register={register}
