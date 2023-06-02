@@ -43,12 +43,15 @@ export const OutlineInput = ({
 
   const [loadingOutline, setLoadingOutline] = useState<boolean>(false);
 
-  const [mainKeywords, outline] = watch(["keywords.main", "outline"]);
+  const [keywords, outline] = watch(["keywords", "outline"]);
 
-  const noKeywords = (mainKeywords ?? "").trim().length === 0;
+  const noKeywords = (keywords.main ?? "").trim().length === 0;
 
   const onGenerateOutline = async () => {
-    if (!mainKeywords || (mainKeywords && mainKeywords.trim().length === 0)) {
+    if (
+      !keywords.main ||
+      (keywords.main && keywords.main.trim().length === 0)
+    ) {
       trigger("keywords", { shouldFocus: true });
       return;
     }
@@ -66,7 +69,7 @@ export const OutlineInput = ({
             role: "user",
             content:
               settings?.custom?.outline ??
-              outlinePrompt.replaceAll("{{keywords}}", mainKeywords)
+              outlinePrompt.replaceAll("{{keywords}}", keywords.main)
           }
         ]
       });
