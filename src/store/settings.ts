@@ -5,11 +5,17 @@ import { Models } from "@interface/openai";
 
 type SettingsType = {
   custom: {
-    keywords?: string;
+    keywords: {
+      main?:string,
+      secondary?:string
+    };
     outline?: string;
   };
   model: {
-    keywords: Models;
+    keywords: {
+      main:Models,
+      secondary:Models
+    };
     outline: Models;
   };
 };
@@ -23,8 +29,13 @@ export const useSettings = create<Settings>()(
   persist(
     set => ({
       settings: {
-        custom: {},
-        model: { keywords: "gpt-3.5-turbo", outline: "gpt-4" }
+        custom: {
+          keywords:{}
+        },
+        model: { keywords:{
+          main: "gpt-3.5-turbo",
+          secondary: "gpt-3.5-turbo"
+        }, outline: "gpt-4" }
       },
       setSettings: settings => set({ settings })
     }),

@@ -42,12 +42,12 @@ export const OutlineInput = ({
 
   const [loadingOutline, setLoadingOutline] = useState<boolean>(false);
 
-  const [keywords, outline] = watch(["keywords", "outline"]);
+  const [mainKeywords, outline] = watch(["keywords.main", "outline"]);
 
-  const noKeywords = (keywords ?? "").trim().length === 0;
+  const noKeywords = (mainKeywords ?? "").trim().length === 0;
 
   const onGenerateOutline = async () => {
-    if (!keywords || (keywords && keywords.trim().length === 0)) {
+    if (!mainKeywords || (mainKeywords && mainKeywords.trim().length === 0)) {
       trigger("keywords", { shouldFocus: true });
       return;
     }
@@ -65,7 +65,7 @@ export const OutlineInput = ({
             role: "user",
             content:
               settings?.custom?.outline ??
-              structure.replaceAll("{{keywords}}", keywords)
+              structure.replaceAll("{{keywords}}", mainKeywords)
           }
         ]
       });
@@ -90,25 +90,19 @@ export const OutlineInput = ({
           onRegenerate={() => {}}
           selectedModel={settings.model.outline}
           onModel={model => {
-            setSettings({
-              ...settings,
-              model: {
-                ...settings.model,
-                outline: model
-              }
-            });
+            const settingsCopy = structuredClone(settings);
+            settingsCopy.model.outline = model;
+
+            setSettings(settingsCopy);
           }}
           promptPlaceholder="Please write a creative outline..."
           customPrompt={settings.custom.outline}
-          onPrompt={prompt =>
-            setSettings({
-              ...settings,
-              custom: {
-                ...settings,
-                outline: prompt
-              }
-            })
-          }
+          onPrompt={prompt => {
+            const settingsCopy = structuredClone(settings);
+            settingsCopy.custom.outline = prompt;
+
+            setSettings(settingsCopy);
+          }}
         />
       </div>
 

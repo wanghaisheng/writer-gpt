@@ -19,7 +19,10 @@ import { KeyWordsInputs } from "./inputs/keywords";
 import { OutlineInput } from "./inputs/outline";
 
 export const generateContent = z.object({
-  keywords: z.string().min(1, { message: "Please add keywords!" }),
+  keywords: z.object({
+    main: z.string().min(1, { message: "Please add keywords!" }),
+    secondary: z.string().min(1, { message: "Please add keywords!" })
+  }),
   outline: z.string().min(1, { message: "Please add outline!" })
 });
 
