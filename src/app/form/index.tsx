@@ -1,13 +1,23 @@
 "use client";
 
+import React, { useState } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Circle, Play } from "lucide-react";
-import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import {
+  contentPrompt,
+  outlineToArraySystemPrompt,
+  systemPrompt
+} from "@config/chat";
+import { outlineToArrayPrompt } from "@config/chat";
 import { title } from "@config/seo";
 
+import { PostSection } from "@interface/structure";
+
+import { useSettings } from "@store/settings";
 import { useToken } from "@store/token";
 
 import ThemeSwitch from "@components/ThemeSwitch";
@@ -15,13 +25,15 @@ import { TokenForm } from "@components/Token";
 import { Button } from "@components/ui/button";
 import { Separator } from "@components/ui/separator";
 
+import { chat } from "@lib/openai";
+
 import { KeyWordsInputs } from "./inputs/keywords";
 import { OutlineInput } from "./inputs/outline";
 
 export const generateContent = z.object({
   keywords: z.object({
-    main: z.string().min(1, { message: "Please add keywords!" }),
-    secondary: z.string().min(1, { message: "Please add keywords!" })
+    main: z.string().min(1, { message: "Please add main keywords!" }),
+    secondary: z.string().min(1, { message: "Please add secondary keywords!" })
   }),
   outline: z.string().min(1, { message: "Please add outline!" })
 });
@@ -30,6 +42,9 @@ export type GenerateContent = z.infer<typeof generateContent>;
 
 export const Form = () => {
   const { token } = useToken();
+  const { settings } = useSettings();
+
+  const [postContent, setPostContent] = useState<string>("");
 
   const {
     register,
@@ -42,24 +57,64 @@ export const Form = () => {
     resolver: zodResolver(generateContent)
   });
 
+  const outline = watch("outline");
+
   const onSubmit = handleSubmit(async payload => {
     if (!token) return;
 
+    const sections: PostSection[] = [];
+
     try {
-      // const response = await chat({
-      //   key: token,
-      //   model: settings.model.outline,
-      //   messages: [
-      //     {
-      //       role: "user",
-      //       content:
-      //         settings?.custom?.outline ??
-      //         structure.replaceAll("{{keywords}}", keywords)
-      //     }
-      //   ]
-      // });
+      const response = await chat({
+        key: token,
+        model: settings.model.outline,
+        messages: [
+          {
+            role: "system",
+            content: outlineToArraySystemPrompt
+          },
+          {
+            role: "user",
+            content: outlineToArrayPrompt.replace("{{outline}}", outline)
+          }
+        ]
+      });
+
+      console.log(response);
     } catch (error) {
+      console.log("Failed to make section structure");
+
+      return;
       // Handle fetch request errors
+    }
+
+    for (const section of sections) {
+      try {
+        const response = await chat({
+          key: token,
+          model: settings.model.outline,
+          messages: [
+            {
+              role: "system",
+              content: systemPrompt
+            },
+            {
+              role: "assistant",
+              content: outline
+            },
+            {
+              role: "user",
+              content: contentPrompt
+                .replaceAll(`{{heading}}`, section.heading)
+                .replaceAll(`{{subpoints}}`, section.subpoints.join(", "))
+            }
+          ]
+        });
+
+        if (response) setPostContent(prevState => `${prevState}${response}`);
+      } catch (error) {
+        // Handle fetch request errors
+      }
     }
   });
 
@@ -113,6 +168,8 @@ export const Form = () => {
           <Play className="w-6 h-6 mr-2" /> Generate
         </Button>
       </form>
+
+      <div className="bg-blue-600/10">{postContent}</div>
     </div>
   );
 };

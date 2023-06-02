@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+
 import {
   FieldErrors,
   UseFormRegister,
@@ -9,7 +10,7 @@ import {
   UseFormWatch
 } from "react-hook-form";
 
-import { structure } from "@config/chat";
+import { outlinePrompt } from "@config/chat";
 
 import { useSettings } from "@store/settings";
 import { useToken } from "@store/token";
@@ -65,7 +66,7 @@ export const OutlineInput = ({
             role: "user",
             content:
               settings?.custom?.outline ??
-              structure.replaceAll("{{keywords}}", mainKeywords)
+              outlinePrompt.replaceAll("{{keywords}}", mainKeywords)
           }
         ]
       });
