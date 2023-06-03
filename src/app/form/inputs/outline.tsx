@@ -7,7 +7,6 @@ import {
   FieldErrors,
   UseFormRegister,
   UseFormSetValue,
-  UseFormTrigger,
   UseFormWatch
 } from "react-hook-form";
 
@@ -17,6 +16,8 @@ import {
   outlineRegeneratePromptSystem
 } from "@config/chat";
 
+import { useDisabled } from "@store/disabled";
+import { useLoading } from "@store/loading";
 import { useSettings } from "@store/settings";
 import { useToken } from "@store/token";
 
@@ -40,24 +41,35 @@ type Props = {
   register: UseFormRegister<GenerateContent>;
   watch: UseFormWatch<GenerateContent>;
   errors: FieldErrors<GenerateContent>;
-  loading?: boolean;
 };
 
-export const OutlineInput = ({
-  setValue,
-  register,
-  watch,
-  errors,
-  loading
-}: Props) => {
+export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
   const { token } = useToken();
   const { settings, setSettings } = useSettings();
+  const {
+    setFormLoading,
+    setMainLoading,
+    setOutlineLoading,
+    setSecondaryLoading,
+    formLoading,
+    mainLoading,
+    outlineLoading,
+    secondaryLoading
+  } = useLoading();
+  const {
+    setFormDisabled,
+    setMainDisabled,
+    setOutlineDisabled,
+    setSecondaryDisabled,
+    formDisabled,
+    mainDisabled,
+    outlineDisabled,
+    secondaryDisabled
+  } = useDisabled();
 
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
 
   const [selectedText, setSelectedText] = useState<string>("");
-
-  const [loadingOutline, setLoadingOutline] = useState<boolean>(false);
 
   const [keywords, outline] = watch(["keywords", "outline"]);
 
@@ -68,7 +80,10 @@ export const OutlineInput = ({
   const onGenerateOutline = async () => {
     if (!token) return;
 
-    setLoadingOutline(true);
+    setOutlineLoading(true);
+    setFormDisabled(true);
+    setMainDisabled(true);
+    setSecondaryDisabled(true);
 
     try {
       const response = await chat({
@@ -89,13 +104,19 @@ export const OutlineInput = ({
       // Handle fetch request errors
     }
 
-    setLoadingOutline(false);
+    setOutlineLoading(false);
+    setFormDisabled(false);
+    setMainDisabled(false);
+    setSecondaryDisabled(false);
   };
 
   const onRegenerate = async () => {
     if (!token || !selectedText.trim()) return;
 
-    setLoadingOutline(true);
+    setOutlineLoading(true);
+    setFormDisabled(true);
+    setMainDisabled(true);
+    setSecondaryDisabled(true);
 
     try {
       const response = await chat({
@@ -125,7 +146,10 @@ export const OutlineInput = ({
       // Handle fetch request errors
     }
 
-    setLoadingOutline(false);
+    setOutlineLoading(false);
+    setFormDisabled(false);
+    setMainDisabled(false);
+    setSecondaryDisabled(false);
   };
 
   const onSelectText = () => {
@@ -144,7 +168,7 @@ export const OutlineInput = ({
 
         <SettingsMenu
           loadingGenerate={
-            loadingOutline || !hasKeywords(keywords?.main) || loading
+            outlineLoading || outlineDisabled || !hasKeywords(keywords?.main)
           }
           onGenerate={onGenerateOutline}
           selectedModel={settings.model.outline}
@@ -166,12 +190,12 @@ export const OutlineInput = ({
       </div>
 
       <ContextMenu>
-        <ContextMenuTrigger disabled={noKeywords || loading}>
+        <ContextMenuTrigger disabled={noKeywords}>
           <Textarea
-            disabled={!token || noKeywords || loading}
+            disabled={!token || noKeywords || outlineDisabled}
             id="outline"
             placeholder="Introduction..."
-            loading={loadingOutline}
+            loading={outlineLoading}
             error={errors?.outline?.message}
             {...outlineProps}
             onBlur={onSelectText}

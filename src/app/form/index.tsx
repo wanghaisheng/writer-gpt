@@ -18,6 +18,8 @@ import { title } from "@config/seo";
 
 import { PostSection } from "@interface/structure";
 
+import { useDisabled } from "@store/disabled";
+import { useLoading } from "@store/loading";
 import { useSettings } from "@store/settings";
 import { useToken } from "@store/token";
 
@@ -44,8 +46,27 @@ export type GenerateContent = z.infer<typeof generateContent>;
 export const Form = () => {
   const { token } = useToken();
   const { settings } = useSettings();
+  const {
+    setFormLoading,
+    setMainLoading,
+    setOutlineLoading,
+    setSecondaryLoading,
+    formLoading,
+    mainLoading,
+    outlineLoading,
+    secondaryLoading
+  } = useLoading();
+  const {
+    setFormDisabled,
+    setMainDisabled,
+    setOutlineDisabled,
+    setSecondaryDisabled,
+    formDisabled,
+    mainDisabled,
+    outlineDisabled,
+    secondaryDisabled
+  } = useDisabled();
 
-  const [loading, setLoading] = useState<boolean>(false);
   const [postContent, setPostContent] = useState<string>(``);
   const [failedSections, setFailedSections] = useState<PostSection[]>([]);
 
@@ -71,7 +92,10 @@ export const Form = () => {
   const onSubmit = handleSubmit(async payload => {
     if (!token) return;
 
-    setLoading(true);
+    setFormLoading(true);
+    setMainDisabled(true);
+    setSecondaryDisabled(true);
+    setOutlineDisabled(true);
 
     let sections: PostSection[] = [];
 
@@ -94,9 +118,6 @@ export const Form = () => {
       if (response) sections = JSON.parse(response) as unknown as PostSection[];
     } catch (error) {
       console.log("Failed to make section structure");
-
-      return;
-      // Handle fetch request errors
     }
 
     try {
@@ -137,7 +158,10 @@ export const Form = () => {
       console.log(error);
     }
 
-    setLoading(false);
+    setFormLoading(false);
+    setMainDisabled(false);
+    setSecondaryDisabled(false);
+    setOutlineDisabled(false);
   });
 
   return (
@@ -168,7 +192,6 @@ export const Form = () => {
           register={register}
           setValue={setValue}
           watch={watch}
-          loading={loading}
         />
 
         <OutlineInput
@@ -182,10 +205,10 @@ export const Form = () => {
           type="submit"
           variant="blue"
           className="md:col-start-6"
-          disabled={loading || !outline.trim()}
+          disabled={formDisabled || formLoading || !outline.trim()}
         >
-          {!loading && <ScrollText className="w-4 h-4" />}
-          {loading && <Loader2 className="w-4 h-4 animate-spin" />}
+          {!formLoading && <ScrollText className="w-4 h-4" />}
+          {formLoading && <Loader2 className="w-4 h-4 animate-spin" />}
           <span className="ml-2">Generate</span>
         </Button>
       </form>

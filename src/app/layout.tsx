@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <main className="container flex flex-col items-center justify-center gap-y-3 min-h-screen">
           <HOC>{children}</HOC>

@@ -15,6 +15,8 @@ import {
   secondaryKeywordsSystem
 } from "@config/chat";
 
+import { useDisabled } from "@store/disabled";
+import { useLoading } from "@store/loading";
 import { useSettings } from "@store/settings";
 import { useToken } from "@store/token";
 
@@ -32,23 +34,26 @@ type Props = {
   register: UseFormRegister<GenerateContent>;
   watch: UseFormWatch<GenerateContent>;
   errors: FieldErrors<GenerateContent>;
-  loading?: boolean;
 };
 
 export const KeyWordsInputs = ({
   setValue,
   register,
   watch,
-  errors,
-  loading
+  errors
 }: Props) => {
   const { token } = useToken();
   const { settings, setSettings } = useSettings();
-
-  const [loadingMainKeyWords, setLoadingMainKeyWords] =
-    useState<boolean>(false);
-  const [loadingSecondaryKeyWords, setLoadingSecondaryKeyWords] =
-    useState<boolean>(false);
+  const { setMainLoading, setSecondaryLoading, mainLoading, secondaryLoading } =
+    useLoading();
+  const {
+    setFormDisabled,
+    setMainDisabled,
+    setOutlineDisabled,
+    setSecondaryDisabled,
+    mainDisabled,
+    secondaryDisabled
+  } = useDisabled();
 
   const keywords = watch("keywords");
   const hasKeywords = hasKeywordsFn(keywords?.main);
@@ -56,7 +61,10 @@ export const KeyWordsInputs = ({
   const onGenerateMainKeywords = async () => {
     if (!token) return;
 
-    setLoadingMainKeyWords(true);
+    setMainLoading(true);
+    setSecondaryDisabled(true);
+    setOutlineDisabled(true);
+    setFormDisabled(true);
 
     try {
       const response = await chat({
@@ -85,13 +93,19 @@ export const KeyWordsInputs = ({
       // Handle fetch request errors
     }
 
-    setLoadingMainKeyWords(false);
+    setMainLoading(false);
+    setSecondaryDisabled(false);
+    setOutlineDisabled(false);
+    setFormDisabled(false);
   };
 
   const onGenerateSecondaryKeywords = async () => {
     if (!token) return;
 
-    setLoadingSecondaryKeyWords(true);
+    setMainDisabled(true);
+    setSecondaryLoading(true);
+    setOutlineDisabled(true);
+    setFormDisabled(true);
 
     try {
       const response = await chat({
@@ -126,7 +140,10 @@ export const KeyWordsInputs = ({
       // Handle fetch request errors
     }
 
-    setLoadingSecondaryKeyWords(false);
+    setMainDisabled(false);
+    setSecondaryLoading(false);
+    setOutlineDisabled(false);
+    setFormDisabled(false);
   };
 
   return (
@@ -136,7 +153,7 @@ export const KeyWordsInputs = ({
           <Label htmlFor="keywords">Main Keywords</Label>
 
           <SettingsMenu
-            loadingGenerate={loadingMainKeyWords || !hasKeywords || loading}
+            loadingGenerate={mainLoading || mainDisabled || !hasKeywords}
             onGenerate={onGenerateMainKeywords}
             selectedModel={settings.model.keywords.main}
             onModel={model => {
@@ -157,11 +174,11 @@ export const KeyWordsInputs = ({
         </div>
 
         <Textarea
-          disabled={!token || loading}
+          disabled={!token || mainDisabled}
           id="keywords"
           placeholder="- Keyword 1..."
           error={errors?.keywords?.message}
-          loading={loadingMainKeyWords}
+          loading={mainLoading}
           {...register("keywords.main")}
         />
       </div>
@@ -172,7 +189,7 @@ export const KeyWordsInputs = ({
 
           <SettingsMenu
             loadingGenerate={
-              loadingSecondaryKeyWords || !hasKeywords || loading
+              secondaryLoading || secondaryDisabled || !hasKeywords
             }
             onGenerate={onGenerateSecondaryKeywords}
             selectedModel={settings.model.keywords.secondary}
@@ -194,11 +211,11 @@ export const KeyWordsInputs = ({
         </div>
 
         <Textarea
-          disabled={!token || loading}
+          disabled={!token || secondaryDisabled}
           id="keywords"
           placeholder="- Keyword 2..."
           error={errors?.keywords?.message}
-          loading={loadingSecondaryKeyWords}
+          loading={secondaryLoading}
           {...register("keywords.secondary")}
         />
       </div>
