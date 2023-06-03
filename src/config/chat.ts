@@ -5,6 +5,8 @@ export const contentPrompt = `Write highly detailed and informative paragraphs f
 in the response. Make it a first-person narrative. Add personal insights. Incorporate humor into writing. Include markdown tables and bullet points or numbered list when possible.
 
 respond in markdown, for heading use ## and for subpoints ###
+
+write a conclusion only for the "conclusion" section
 `;
 
 export const outlinePrompt = `

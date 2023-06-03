@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertTriangle, Circle, Loader2, Play } from "lucide-react";
+import { AlertTriangle, Circle, Copy, Loader2, ScrollText } from "lucide-react";
 import { useForm } from "react-hook-form";
 import ReactMarkdown from "react-markdown";
 import { z } from "zod";
@@ -178,25 +178,33 @@ export const Form = () => {
           className="md:col-start-6"
           disabled={loading || !outline.trim()}
         >
-          {!loading && <Play className="w-6 h-6" />}
+          {!loading && <ScrollText className="w-4 h-4" />}
           {loading && <Loader2 className="w-4 h-4 animate-spin" />}
           <span className="ml-2">Generate</span>
         </Button>
       </form>
 
-      <ul>
-        {failedSections.map((section, index) => (
-          <li key={index}>
-            <p className="text-sm text-red-600">
-              Heading Failed: {section.heading}
-            </p>
-          </li>
-        ))}
-      </ul>
+      {failedSections.length > 0 && (
+        <ul>
+          {failedSections.map((section, index) => (
+            <li key={index}>
+              <p className="text-sm text-red-600">
+                Heading Failed: {section.heading}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
 
       {!!postContent.trim() && (
-        <div className="p-4 rounded-sm border">
-          <ReactMarkdown>{postContent}</ReactMarkdown>
+        <div className="flex flex-col gap-2">
+          <Button variant="ghost" size="xs" className="w-fit ml-auto">
+            <Copy className="mr-2 h-4 w-4" /> Copy
+          </Button>
+
+          <div className="p-4 rounded-sm border">
+            <ReactMarkdown>{postContent}</ReactMarkdown>
+          </div>
         </div>
       )}
     </div>
