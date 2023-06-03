@@ -46,6 +46,7 @@ export const Form = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [postContent, setPostContent] = useState<string>("");
+  const [failedSections, setFailedSections] = useState<PostSection[]>([]);
 
   const {
     register,
@@ -123,6 +124,7 @@ export const Form = () => {
 
           if (response) setPostContent(prevState => `${prevState}${response}`);
         } catch (error) {
+          setFailedSections(prevState => [...prevState, section]);
           console.log(error);
         }
       }
@@ -182,9 +184,21 @@ export const Form = () => {
         </Button>
       </form>
 
-      <div className="p-4 rounded-sm border">
-        <ReactMarkdown>{postContent}</ReactMarkdown>
-      </div>
+      <ul>
+        {failedSections.map((section, index) => (
+          <li key={index}>
+            <p className="text-sm text-red-600">
+              Heading Failed: {section.heading}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      {!!postContent.trim() && (
+        <div className="p-4 rounded-sm border">
+          <ReactMarkdown>{postContent}</ReactMarkdown>
+        </div>
+      )}
     </div>
   );
 };

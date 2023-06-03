@@ -1,9 +1,14 @@
-export const contentPrompt = `Write highly detailed and informative paragraphs for {{heading}}, with subpoints including a lot of details, evidence or examples: {{subpoints}}. Make it a first-person narrative. Add personal insights. Incorporate humor into writing. Include markdown tables and bullet points or numbered list when possible.
+export const contentPrompt = `Write highly detailed and informative paragraphs for {{heading}}, with subpoints including a lot of details, evidence or examples: {{subpoints}}, use these keywords:
+
+{{keywords}}
+
+in the response. Make it a first-person narrative. Add personal insights. Incorporate humor into writing. Include markdown tables and bullet points or numbered list when possible.
+
 respond in markdown, for heading use ## and for subpoints ###
 `;
 
 export const outlinePrompt = `
-Write a creative outline with these in it {{keywords}}, like the following structure:
+Write a creative outline with these keywords in it {{keywords}}, like the following structure:
 Title (should be attention-grabbing, descriptive)
 Introduction (introduction should be engaging, hooking the reader, providing context)
 Section (It should have a clear and descriptive heading that tells the reader what the section is about)

@@ -192,7 +192,7 @@ export const KeyWordsInputs = ({
         <Textarea
           disabled={!token}
           id="keywords"
-          placeholder="- Keyword 1..."
+          placeholder="- Keyword 2..."
           error={errors?.keywords?.message}
           loading={loadingSecondaryKeyWords}
           {...register("keywords.secondary")}

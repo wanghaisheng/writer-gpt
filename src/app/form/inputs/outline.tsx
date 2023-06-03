@@ -54,7 +54,7 @@ export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
 
   const [keywords, outline] = watch(["keywords", "outline"]);
 
-  const noKeywords = (keywords?.main ?? "").trim().length === 0;
+  const noKeywords = !hasKeywords(keywords?.main);
 
   const { ref: outlineRef, ...outlineProps } = register("outline");
 
@@ -104,6 +104,10 @@ export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
             content: outlineRegeneratePrompt
               .replace("{{section}}", selectedText)
               .replace("{{outline}}", outline)
+              .replace(
+                "{{keywords}}",
+                `${keywords.main}\n${keywords.secondary}`
+              )
           }
         ]
       });
