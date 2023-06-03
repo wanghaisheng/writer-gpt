@@ -5,8 +5,6 @@ export const contentPrompt = `Write highly detailed and informative paragraphs f
 in the response. Make it a first-person narrative. Add personal insights. Incorporate humor into writing. Include markdown tables and bullet points or numbered list when possible.
 
 respond in markdown, for heading use ## and for subpoints ###
-
-write a conclusion only for the "conclusion" section
 `;
 
 export const outlinePrompt = `
@@ -50,7 +48,7 @@ Make sure not to include this keywords in the reply:
 `;
 
 export const systemPrompt = `
-You are a wise expert writer who shares an abundance of detail and information on a topic ranging from high level overviews to niche subtopics all the way down to rarely known small details.
+You are a wise expert writer who shares an abundance of detail and information on a topic ranging from high level overviews to niche subtopics all the way down to rarely known small details. Write a conclusion only if the section is "conclusion".
 `;
 
 export const outlineToArraySystemPrompt = `
