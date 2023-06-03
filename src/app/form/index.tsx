@@ -122,7 +122,11 @@ export const Form = () => {
             ]
           });
 
-          if (response) setPostContent(prevState => `${prevState}${response}`);
+          if (response)
+            setPostContent(
+              prevState =>
+                `${prevState}${response.replace(" | | ", " | \n | ")}`
+            );
         } catch (error) {
           setFailedSections(prevState => [...prevState, section]);
           console.log(error);
