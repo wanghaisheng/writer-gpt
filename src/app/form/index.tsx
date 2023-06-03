@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Circle, Copy, Loader2, ScrollText } from "lucide-react";
 import { useForm } from "react-hook-form";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { z } from "zod";
 
 import {
@@ -202,12 +203,21 @@ export const Form = () => {
 
       {!!postContent.trim() && (
         <div className="flex flex-col gap-2">
-          <Button variant="ghost" size="xs" className="w-fit ml-auto">
+          <Button
+            variant="ghost"
+            size="xs"
+            className="w-fit ml-auto"
+            onClick={() => {
+              navigator.clipboard.writeText(postContent);
+            }}
+          >
             <Copy className="mr-2 h-4 w-4" /> Copy
           </Button>
 
           <div className="p-4 rounded-sm border">
-            <ReactMarkdown>{postContent}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {postContent}
+            </ReactMarkdown>
           </div>
         </div>
       )}
