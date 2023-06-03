@@ -160,8 +160,8 @@ export const Form = () => {
 
   return (
     <div className="flex flex-col w-full max-w-3xl gap-8 py-10">
-      <div className="flex flex-col-reverse sm:flex-row items-center justify-center sm:justify-between gap-4">
-        <h1 className="text-2xl font-semibold flex items-center">
+      <div className="flex items-center justify-between sm:justify-between gap-4">
+        <h1 className="text-2xl font-semibold flex items-center mb-0">
           <Circle className="fill-blue-600 stroke-blue-600 mr-2" /> {title}
         </h1>
 
@@ -231,8 +231,8 @@ export const Form = () => {
       )}
 
       <p className="flex items-center gap-1">
-        Made <Heart className="heart-icon fill-red-600 stroke-red-600" /> in
-        Albania
+        Made with <Heart className="heart-icon fill-red-600 stroke-red-600" />{" "}
+        in Albania
       </p>
     </div>
   );
