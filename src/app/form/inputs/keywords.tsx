@@ -32,13 +32,15 @@ type Props = {
   register: UseFormRegister<GenerateContent>;
   watch: UseFormWatch<GenerateContent>;
   errors: FieldErrors<GenerateContent>;
+  loading?: boolean;
 };
 
 export const KeyWordsInputs = ({
   setValue,
   register,
   watch,
-  errors
+  errors,
+  loading
 }: Props) => {
   const { token } = useToken();
   const { settings, setSettings } = useSettings();
@@ -134,7 +136,7 @@ export const KeyWordsInputs = ({
           <Label htmlFor="keywords">Main Keywords</Label>
 
           <SettingsMenu
-            loadingGenerate={loadingMainKeyWords || !hasKeywords}
+            loadingGenerate={loadingMainKeyWords || !hasKeywords || loading}
             onGenerate={onGenerateMainKeywords}
             selectedModel={settings.model.keywords.main}
             onModel={model => {
@@ -155,7 +157,7 @@ export const KeyWordsInputs = ({
         </div>
 
         <Textarea
-          disabled={!token}
+          disabled={!token || loading}
           id="keywords"
           placeholder="- Keyword 1..."
           error={errors?.keywords?.message}
@@ -169,7 +171,9 @@ export const KeyWordsInputs = ({
           <Label htmlFor="keywords">Secondary Keywords</Label>
 
           <SettingsMenu
-            loadingGenerate={loadingSecondaryKeyWords || !hasKeywords}
+            loadingGenerate={
+              loadingSecondaryKeyWords || !hasKeywords || loading
+            }
             onGenerate={onGenerateSecondaryKeywords}
             selectedModel={settings.model.keywords.secondary}
             onModel={model => {
@@ -190,7 +194,7 @@ export const KeyWordsInputs = ({
         </div>
 
         <Textarea
-          disabled={!token}
+          disabled={!token || loading}
           id="keywords"
           placeholder="- Keyword 2..."
           error={errors?.keywords?.message}

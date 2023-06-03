@@ -4,10 +4,6 @@ import { Form } from "./form";
 
 type Props = {};
 
-const HomePage = ({}: Props) => (
-  <main className="container flex flex-col items-center justify-center gap-y-3 min-h-screen">
-    <Form />
-  </main>
-);
+const HomePage = ({}: Props) => <Form />;
 
 export default HomePage;

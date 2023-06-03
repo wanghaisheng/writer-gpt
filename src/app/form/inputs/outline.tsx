@@ -40,9 +40,16 @@ type Props = {
   register: UseFormRegister<GenerateContent>;
   watch: UseFormWatch<GenerateContent>;
   errors: FieldErrors<GenerateContent>;
+  loading?: boolean;
 };
 
-export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
+export const OutlineInput = ({
+  setValue,
+  register,
+  watch,
+  errors,
+  loading
+}: Props) => {
   const { token } = useToken();
   const { settings, setSettings } = useSettings();
 
@@ -136,7 +143,9 @@ export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
         <Label htmlFor="outline">Outline</Label>
 
         <SettingsMenu
-          loadingGenerate={loadingOutline || !hasKeywords(keywords?.main)}
+          loadingGenerate={
+            loadingOutline || !hasKeywords(keywords?.main) || loading
+          }
           onGenerate={onGenerateOutline}
           selectedModel={settings.model.outline}
           onModel={model => {
@@ -157,7 +166,7 @@ export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
       </div>
 
       <ContextMenu>
-        <ContextMenuTrigger disabled={noKeywords}>
+        <ContextMenuTrigger disabled={noKeywords || loading}>
           <Textarea
             disabled={!token || noKeywords}
             id="outline"

@@ -46,7 +46,7 @@ export const Form = () => {
   const { settings } = useSettings();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [postContent, setPostContent] = useState<string>("");
+  const [postContent, setPostContent] = useState<string>(``);
   const [failedSections, setFailedSections] = useState<PostSection[]>([]);
 
   const {
@@ -168,6 +168,7 @@ export const Form = () => {
           register={register}
           setValue={setValue}
           watch={watch}
+          loading={loading}
         />
 
         <OutlineInput
