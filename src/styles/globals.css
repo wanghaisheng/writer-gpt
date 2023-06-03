@@ -129,3 +129,33 @@
 textarea::-webkit-scrollbar {
   display: none;
 }
+
+.heart-icon {
+  animation: heartAnimation 1.2s infinite;
+}
+
+@keyframes heartAnimation {
+  0% {
+    transform: scale(0.8);
+  }
+
+  5% {
+    transform: scale(0.9);
+  }
+
+  10% {
+    transform: scale(0.8);
+  }
+
+  15% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.8);
+  }
+
+  to {
+    transform: scale(0.8);
+  }
+}
