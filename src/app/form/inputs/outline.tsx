@@ -168,7 +168,7 @@ export const OutlineInput = ({
       <ContextMenu>
         <ContextMenuTrigger disabled={noKeywords || loading}>
           <Textarea
-            disabled={!token || noKeywords}
+            disabled={!token || noKeywords || loading}
             id="outline"
             placeholder="Introduction..."
             loading={loadingOutline}
