@@ -48,7 +48,7 @@ type Props = {
 
   promptPlaceholder?: string;
   customPrompt?: string;
-  onPrompt: (prompt?: string) => void;
+  onPrompt?: (prompt?: string) => void;
 };
 
 const modelsList: {
@@ -127,54 +127,58 @@ export const SettingsMenu = ({
             </DropdownMenuPortal>
           </DropdownMenuSub>
 
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Pencil className="mr-2 h-4 w-4" />
-            <span>Prompt</span>
-          </DropdownMenuItem>
+          {onPrompt && (
+            <DropdownMenuItem onClick={() => setOpen(true)}>
+              <Pencil className="mr-2 h-4 w-4" />
+              <span>Prompt</span>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={open} onOpenChange={state => setOpen(state)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Change Prompt</DialogTitle>
-            <DialogDescription>
-              Type below your custom prompt.
-            </DialogDescription>
-          </DialogHeader>
+      {onPrompt && (
+        <Dialog open={open} onOpenChange={state => setOpen(state)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Change Prompt</DialogTitle>
+              <DialogDescription>
+                Type below your custom prompt.
+              </DialogDescription>
+            </DialogHeader>
 
-          <Textarea
-            value={prompt}
-            onChange={e => setPrompt(e.target.value)}
-            placeholder={promptPlaceholder ?? "Prompt..."}
-          />
+            <Textarea
+              value={prompt}
+              onChange={e => setPrompt(e.target.value)}
+              placeholder={promptPlaceholder ?? "Prompt..."}
+            />
 
-          <DialogFooter>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setPrompt("");
-              }}
-            >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              <span>Reset</span>
-            </Button>
-            <Button
-              disabled={
-                customPrompt === prompt ||
-                (!customPrompt && prompt.trim().length === 0)
-              }
-              onClick={() => {
-                onPrompt(prompt.trim().length > 0 ? prompt : undefined);
-                setOpen(false);
-              }}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              <span>Save Changes</span>
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setPrompt("");
+                }}
+              >
+                <RotateCcw className="w-4 h-4 mr-2" />
+                <span>Reset</span>
+              </Button>
+              <Button
+                disabled={
+                  customPrompt === prompt ||
+                  (!customPrompt && prompt.trim().length === 0)
+                }
+                onClick={() => {
+                  onPrompt(prompt.trim().length > 0 ? prompt : undefined);
+                  setOpen(false);
+                }}
+              >
+                <Save className="w-4 h-4 mr-2" />
+                <span>Save Changes</span>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

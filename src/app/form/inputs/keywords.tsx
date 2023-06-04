@@ -77,9 +77,7 @@ export const KeyWordsInputs = ({
           },
           {
             role: "user",
-            content: (
-              settings?.custom?.keywords?.main ?? keywordsCommand
-            ).replaceAll("{{keywords}}", keywords.main)
+            content: keywordsCommand.replaceAll("{{keywords}}", keywords.main)
           }
         ]
       });
@@ -87,7 +85,10 @@ export const KeyWordsInputs = ({
       if (response)
         setValue(
           "keywords.main",
-          `${keywords.main ? `${keywords.main}\n` : ""}${response}`
+          `${keywords.main ? `${keywords.main}\n` : ""}${response.replaceAll(
+            ", ",
+            "\n"
+          )}`
         );
     } catch (error) {
       // Handle fetch request errors
@@ -121,9 +122,7 @@ export const KeyWordsInputs = ({
           },
           {
             role: "user",
-            content: (
-              settings?.custom?.keywords?.secondary ?? keywordsCommand
-            ).replaceAll(
+            content: keywordsCommand.replaceAll(
               "{{keywords}}",
               !!keywords.secondary.trim() ? keywords.secondary : keywords.main
             )
@@ -134,7 +133,9 @@ export const KeyWordsInputs = ({
       if (response)
         setValue(
           "keywords.secondary",
-          `${keywords.secondary ? `${keywords.secondary}\n` : ""}${response}`
+          `${
+            keywords.secondary ? `${keywords.secondary}\n` : ""
+          }${response.replaceAll(", ", "\n")}`
         );
     } catch (error) {
       // Handle fetch request errors
@@ -162,21 +163,13 @@ export const KeyWordsInputs = ({
 
               setSettings(settingsCopy);
             }}
-            promptPlaceholder="Please write related keywords to boats..."
-            customPrompt={settings.custom.keywords?.main}
-            onPrompt={prompt => {
-              const settingsCopy = structuredClone(settings);
-              settingsCopy.custom.keywords.main = prompt;
-
-              setSettings(settingsCopy);
-            }}
           />
         </div>
 
         <Textarea
           disabled={!token || mainDisabled}
           id="keywords"
-          placeholder="- Keyword 1..."
+          placeholder="Keyword 1..."
           error={errors?.keywords?.message}
           loading={mainLoading}
           {...register("keywords.main")}
@@ -199,21 +192,13 @@ export const KeyWordsInputs = ({
 
               setSettings(settingsCopy);
             }}
-            promptPlaceholder="Please write related keywords to boats..."
-            customPrompt={settings.custom.keywords?.secondary}
-            onPrompt={prompt => {
-              const settingsCopy = structuredClone(settings);
-              settingsCopy.custom.keywords.secondary = prompt;
-
-              setSettings(settingsCopy);
-            }}
           />
         </div>
 
         <Textarea
           disabled={!token || secondaryDisabled}
           id="keywords"
-          placeholder="- Keyword 2..."
+          placeholder="Keyword 2..."
           error={errors?.keywords?.message}
           loading={secondaryLoading}
           {...register("keywords.secondary")}

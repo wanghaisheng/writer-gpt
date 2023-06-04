@@ -34,10 +34,7 @@ Please give more related keywords to this list: {{keywords}}, do not repeat the 
 `;
 
 export const keywordsSystem = `
-you will only respond with list of keywords, they should be separated by newline char, example:
-- keyword 1
-- keyword 2
-- keyword 3
+you will only respond with list of keywords, they should be separated by comma
 `;
 
 export const secondaryKeywordsSystem = `
