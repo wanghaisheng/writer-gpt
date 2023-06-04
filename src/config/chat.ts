@@ -48,7 +48,7 @@ Make sure not to include this keywords in the reply:
 `;
 
 export const systemPrompt = `
-You are a wise expert writer who shares an abundance of detail and information on a topic ranging from high level overviews to niche subtopics all the way down to rarely known small details. Write a conclusion only if the section is "conclusion".
+You are a wise expert writer who shares an abundance of detail and information on a topic ranging from high level overviews to niche subtopics all the way down to rarely known small details.  
 `;
 
 export const outlineToArraySystemPrompt = `

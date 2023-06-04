@@ -62,6 +62,10 @@ const modelsList: {
   {
     name: "GPT-3.5 Turbo",
     value: "gpt-3.5-turbo"
+  },
+  {
+    name: "GPT-4 32k",
+    value: "gpt-4-0314"
   }
 ];
 
