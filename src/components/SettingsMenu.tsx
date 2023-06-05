@@ -51,24 +51,6 @@ type Props = {
   onPrompt?: (prompt?: string) => void;
 };
 
-const modelsList: {
-  name: string;
-  value: Models;
-}[] = [
-  {
-    name: "GPT-4",
-    value: "gpt-4"
-  },
-  {
-    name: "GPT-3.5 Turbo",
-    value: "gpt-3.5-turbo"
-  },
-  {
-    name: "GPT-4 32k",
-    value: "gpt-4-0314"
-  }
-];
-
 export const SettingsMenu = ({
   loadingGenerate,
   onGenerate,
@@ -88,6 +70,27 @@ export const SettingsMenu = ({
   useEffect(() => {
     if (open) setPrompt(customPrompt ?? "");
   }, [open]);
+
+  const modelsList: {
+    name: string;
+    value: Models;
+    disabled?: boolean;
+  }[] = [
+    {
+      name: "GPT-3.5 Turbo",
+      value: "gpt-3.5-turbo"
+    },
+    {
+      name: "GPT-4",
+      value: "gpt-4",
+      disabled: !isPro
+    },
+    {
+      name: "GPT-4 32k",
+      value: "gpt-4-0314",
+      disabled: !isPro
+    }
+  ];
 
   return (
     <>
@@ -114,11 +117,12 @@ export const SettingsMenu = ({
 
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                {modelsList.map(({ name, value }, index) => (
+                {modelsList.map(({ name, value, disabled }, index) => (
                   <DropdownMenuCheckboxItem
                     key={index}
                     checked={selectedModel === value}
                     onCheckedChange={() => onModel(value)}
+                    disabled={disabled}
                   >
                     {name}
                   </DropdownMenuCheckboxItem>
