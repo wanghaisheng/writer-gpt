@@ -9,8 +9,14 @@ import {
   UseFormWatch
 } from "react-hook-form";
 
-import { keywordsCommand, keywordsSystem } from "@config/chat";
+import {
+  keywordsCommand,
+  keywordsSystem,
+  secondaryKeywordsSystem
+} from "@config/chat";
 
+import { useDisabled } from "@store/disabled";
+import { useLoading } from "@store/loading";
 import { useSettings } from "@store/settings";
 import { useToken } from "@store/token";
 
@@ -19,6 +25,7 @@ import { Label } from "@components/ui/label";
 import { Textarea } from "@components/ui/textarea";
 
 import { chat } from "@lib/openai";
+import { hasKeywords as hasKeywordsFn } from "@lib/utils";
 
 import { GenerateContent } from "../index";
 
@@ -37,20 +44,27 @@ export const KeyWordsInputs = ({
 }: Props) => {
   const { token } = useToken();
   const { settings, setSettings } = useSettings();
+  const { setMainLoading, setSecondaryLoading, mainLoading, secondaryLoading } =
+    useLoading();
+  const {
+    setFormDisabled,
+    setMainDisabled,
+    setOutlineDisabled,
+    setSecondaryDisabled,
+    mainDisabled,
+    secondaryDisabled
+  } = useDisabled();
 
-  const [loadingMainKeyWords, setLoadingMainKeyWords] =
-    useState<boolean>(false);
-  const [loadingSecondaryKeyWords, setLoadingSecondaryKeyWords] =
-    useState<boolean>(false);
-
-  const [keywords] = watch(["keywords"]);
-
-  const noMainKeywords = (keywords.main ?? "").trim().length === 0;
+  const keywords = watch("keywords");
+  const hasKeywords = hasKeywordsFn(keywords?.main);
 
   const onGenerateMainKeywords = async () => {
     if (!token) return;
 
-    setLoadingMainKeyWords(true);
+    setMainLoading(true);
+    setSecondaryDisabled(true);
+    setOutlineDisabled(true);
+    setFormDisabled(true);
 
     try {
       const response = await chat({
@@ -63,9 +77,7 @@ export const KeyWordsInputs = ({
           },
           {
             role: "user",
-            content: (
-              settings?.custom?.keywords?.main ?? keywordsCommand
-            ).replaceAll("{{keywords}}", keywords.main)
+            content: keywordsCommand.replaceAll("{{keywords}}", keywords.main)
           }
         ]
       });
@@ -73,19 +85,28 @@ export const KeyWordsInputs = ({
       if (response)
         setValue(
           "keywords.main",
-          `${keywords.main ? `${keywords.main}\n` : ""}${response}`
+          `${keywords.main ? `${keywords.main}\n` : ""}${response.replaceAll(
+            ", ",
+            "\n"
+          )}`
         );
     } catch (error) {
       // Handle fetch request errors
     }
 
-    setLoadingMainKeyWords(false);
+    setMainLoading(false);
+    setSecondaryDisabled(false);
+    setOutlineDisabled(false);
+    setFormDisabled(false);
   };
 
-  const onGenerateSecondayKeywords = async () => {
+  const onGenerateSecondaryKeywords = async () => {
     if (!token) return;
 
-    setLoadingSecondaryKeyWords(true);
+    setMainDisabled(true);
+    setSecondaryLoading(true);
+    setOutlineDisabled(true);
+    setFormDisabled(true);
 
     try {
       const response = await chat({
@@ -94,13 +115,17 @@ export const KeyWordsInputs = ({
         messages: [
           {
             role: "system",
-            content: keywordsSystem
+            content: secondaryKeywordsSystem.replace(
+              "{{keywords}}",
+              keywords?.main ?? ""
+            )
           },
           {
             role: "user",
-            content: (
-              settings?.custom?.keywords?.secondary ?? keywordsCommand
-            ).replaceAll("{{keywords}}", keywords.secondary)
+            content: keywordsCommand.replaceAll(
+              "{{keywords}}",
+              !!keywords.secondary.trim() ? keywords.secondary : keywords.main
+            )
           }
         ]
       });
@@ -108,26 +133,29 @@ export const KeyWordsInputs = ({
       if (response)
         setValue(
           "keywords.secondary",
-          `${keywords.secondary ? `${keywords.secondary}\n` : ""}${response}`
+          `${
+            keywords.secondary ? `${keywords.secondary}\n` : ""
+          }${response.replaceAll(", ", "\n")}`
         );
     } catch (error) {
       // Handle fetch request errors
     }
 
-    setLoadingSecondaryKeyWords(false);
+    setMainDisabled(false);
+    setSecondaryLoading(false);
+    setOutlineDisabled(false);
+    setFormDisabled(false);
   };
 
   return (
     <div className="grid md:grid-cols-2 gap-4">
-      <div className="flex flex-col gap-2 md:col-span-2">
+      <div className="flex flex-col gap-2 md:col-span-1">
         <div className="flex items-center justify-between">
           <Label htmlFor="keywords">Main Keywords</Label>
 
           <SettingsMenu
-            loadingGenerate={loadingMainKeyWords || noMainKeywords}
+            loadingGenerate={mainLoading || mainDisabled || !hasKeywords}
             onGenerate={onGenerateMainKeywords}
-            loadingRegenerate={true}
-            onRegenerate={() => {}}
             selectedModel={settings.model.keywords.main}
             onModel={model => {
               const settingsCopy = structuredClone(settings);
@@ -135,36 +163,28 @@ export const KeyWordsInputs = ({
 
               setSettings(settingsCopy);
             }}
-            promptPlaceholder="Please write related keywords to boats..."
-            customPrompt={settings.custom.keywords?.main}
-            onPrompt={prompt => {
-              const settingsCopy = structuredClone(settings);
-              settingsCopy.custom.keywords.main = prompt;
-
-              setSettings(settingsCopy);
-            }}
           />
         </div>
 
         <Textarea
-          disabled={!token}
+          disabled={!token || mainDisabled}
           id="keywords"
-          placeholder="- Keyword 1..."
+          placeholder="Keyword 1..."
           error={errors?.keywords?.message}
-          loading={loadingMainKeyWords}
-          {...register("keywords")}
+          loading={mainLoading}
+          {...register("keywords.main")}
         />
       </div>
 
-      <div className="flex flex-col gap-2 md:col-span-2">
+      <div className="flex flex-col gap-2 md:col-span-1">
         <div className="flex items-center justify-between">
           <Label htmlFor="keywords">Secondary Keywords</Label>
 
           <SettingsMenu
-            loadingGenerate={loadingSecondaryKeyWords}
-            onGenerate={onGenerateSecondayKeywords}
-            loadingRegenerate={true}
-            onRegenerate={() => {}}
+            loadingGenerate={
+              secondaryLoading || secondaryDisabled || !hasKeywords
+            }
+            onGenerate={onGenerateSecondaryKeywords}
             selectedModel={settings.model.keywords.secondary}
             onModel={model => {
               const settingsCopy = structuredClone(settings);
@@ -172,24 +192,16 @@ export const KeyWordsInputs = ({
 
               setSettings(settingsCopy);
             }}
-            promptPlaceholder="Please write related keywords to boats..."
-            customPrompt={settings.custom.keywords?.secondary}
-            onPrompt={prompt => {
-              const settingsCopy = structuredClone(settings);
-              settingsCopy.custom.keywords.secondary = prompt;
-
-              setSettings(settingsCopy);
-            }}
           />
         </div>
 
         <Textarea
-          disabled={!token}
+          disabled={!token || secondaryDisabled}
           id="keywords"
-          placeholder="- Keyword 1..."
+          placeholder="Keyword 2..."
           error={errors?.keywords?.message}
-          loading={loadingSecondaryKeyWords}
-          {...register("keywords")}
+          loading={secondaryLoading}
+          {...register("keywords.secondary")}
         />
       </div>
     </div>

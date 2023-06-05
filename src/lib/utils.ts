@@ -6,3 +6,6 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const isDev = process.env.NODE_ENV === "development";
+
+export const hasKeywords = (value?: string): boolean =>
+  !!value && !!value.trim();

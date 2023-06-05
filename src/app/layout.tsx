@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 
 import { MetaData } from "@config/seo";
 
+import { GoogleAnalytics } from "@components/Analytics";
 import { HOC } from "@components/HOC";
 
 import "@styles/globals.css";
@@ -17,9 +18,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <GoogleAnalytics />
+
       <body className={inter.className}>
-        <HOC>{children}</HOC>
+        <main className="container flex flex-col items-center justify-center gap-y-3 min-h-screen">
+          <HOC>{children}</HOC>
+        </main>
       </body>
     </html>
   );

@@ -43,15 +43,12 @@ type Props = {
   loadingGenerate?: boolean;
   onGenerate: () => void;
 
-  loadingRegenerate?: boolean;
-  onRegenerate: () => void;
-
   selectedModel?: Models;
   onModel: (model: Models) => void;
 
   promptPlaceholder?: string;
   customPrompt?: string;
-  onPrompt: (prompt?: string) => void;
+  onPrompt?: (prompt?: string) => void;
 };
 
 const modelsList: {
@@ -65,15 +62,16 @@ const modelsList: {
   {
     name: "GPT-3.5 Turbo",
     value: "gpt-3.5-turbo"
+  },
+  {
+    name: "GPT-4 32k",
+    value: "gpt-4-0314"
   }
 ];
 
 export const SettingsMenu = ({
   loadingGenerate,
   onGenerate,
-
-  loadingRegenerate,
-  onRegenerate,
 
   selectedModel,
   onModel,
@@ -108,14 +106,6 @@ export const SettingsMenu = ({
             <span>Generate</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem
-            onClick={onRegenerate}
-            disabled={loadingRegenerate || !token}
-          >
-            <Rotate3d className="mr-2 h-4 w-4" />
-            <span>Regenerate</span>
-          </DropdownMenuItem>
-
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <Bot className="mr-2 h-4 w-4" />
@@ -137,54 +127,58 @@ export const SettingsMenu = ({
             </DropdownMenuPortal>
           </DropdownMenuSub>
 
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Pencil className="mr-2 h-4 w-4" />
-            <span>Prompt</span>
-          </DropdownMenuItem>
+          {onPrompt && (
+            <DropdownMenuItem onClick={() => setOpen(true)}>
+              <Pencil className="mr-2 h-4 w-4" />
+              <span>Prompt</span>
+            </DropdownMenuItem>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Dialog open={open} onOpenChange={state => setOpen(state)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Change Prompt</DialogTitle>
-            <DialogDescription>
-              Type below your custom prompt.
-            </DialogDescription>
-          </DialogHeader>
+      {onPrompt && (
+        <Dialog open={open} onOpenChange={state => setOpen(state)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Change Prompt</DialogTitle>
+              <DialogDescription>
+                Type below your custom prompt.
+              </DialogDescription>
+            </DialogHeader>
 
-          <Textarea
-            value={prompt}
-            onChange={e => setPrompt(e.target.value)}
-            placeholder={promptPlaceholder ?? "Prompt..."}
-          />
+            <Textarea
+              value={prompt}
+              onChange={e => setPrompt(e.target.value)}
+              placeholder={promptPlaceholder ?? "Prompt..."}
+            />
 
-          <DialogFooter>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setPrompt("");
-              }}
-            >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              <span>Reset</span>
-            </Button>
-            <Button
-              disabled={
-                customPrompt === prompt ||
-                (!customPrompt && prompt.trim().length === 0)
-              }
-              onClick={() => {
-                onPrompt(prompt.trim().length > 0 ? prompt : undefined);
-                setOpen(false);
-              }}
-            >
-              <Save className="w-4 h-4 mr-2" />
-              <span>Save Changes</span>
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setPrompt("");
+                }}
+              >
+                <RotateCcw className="w-4 h-4 mr-2" />
+                <span>Reset</span>
+              </Button>
+              <Button
+                disabled={
+                  customPrompt === prompt ||
+                  (!customPrompt && prompt.trim().length === 0)
+                }
+                onClick={() => {
+                  onPrompt(prompt.trim().length > 0 ? prompt : undefined);
+                  setOpen(false);
+                }}
+              >
+                <Save className="w-4 h-4 mr-2" />
+                <span>Save Changes</span>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };

@@ -2,24 +2,37 @@
 
 import React, { useState } from "react";
 
+import { Rotate3d } from "lucide-react";
 import {
   FieldErrors,
   UseFormRegister,
   UseFormSetValue,
-  UseFormTrigger,
   UseFormWatch
 } from "react-hook-form";
 
-import { outlinePrompt } from "@config/chat";
+import {
+  outlinePrompt,
+  outlineRegeneratePrompt,
+  outlineRegeneratePromptSystem
+} from "@config/chat";
 
+import { useDisabled } from "@store/disabled";
+import { useLoading } from "@store/loading";
 import { useSettings } from "@store/settings";
 import { useToken } from "@store/token";
 
 import { SettingsMenu } from "@components/SettingsMenu";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger
+} from "@components/ui/context-menu";
 import { Label } from "@components/ui/label";
 import { Textarea } from "@components/ui/textarea";
 
 import { chat } from "@lib/openai";
+import { hasKeywords } from "@lib/utils";
 
 import { GenerateContent } from "../index";
 
@@ -27,38 +40,50 @@ type Props = {
   setValue: UseFormSetValue<GenerateContent>;
   register: UseFormRegister<GenerateContent>;
   watch: UseFormWatch<GenerateContent>;
-  trigger: UseFormTrigger<GenerateContent>;
   errors: FieldErrors<GenerateContent>;
 };
 
-export const OutlineInput = ({
-  setValue,
-  register,
-  watch,
-  errors,
-  trigger
-}: Props) => {
+export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
   const { token } = useToken();
   const { settings, setSettings } = useSettings();
+  const {
+    setFormLoading,
+    setMainLoading,
+    setOutlineLoading,
+    setSecondaryLoading,
+    formLoading,
+    mainLoading,
+    outlineLoading,
+    secondaryLoading
+  } = useLoading();
+  const {
+    setFormDisabled,
+    setMainDisabled,
+    setOutlineDisabled,
+    setSecondaryDisabled,
+    formDisabled,
+    mainDisabled,
+    outlineDisabled,
+    secondaryDisabled
+  } = useDisabled();
 
-  const [loadingOutline, setLoadingOutline] = useState<boolean>(false);
+  const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
+
+  const [selectedText, setSelectedText] = useState<string>("");
 
   const [keywords, outline] = watch(["keywords", "outline"]);
 
-  const noKeywords = (keywords.main ?? "").trim().length === 0;
+  const noKeywords = !hasKeywords(keywords?.main);
+
+  const { ref: outlineRef, ...outlineProps } = register("outline");
 
   const onGenerateOutline = async () => {
-    if (
-      !keywords.main ||
-      (keywords.main && keywords.main.trim().length === 0)
-    ) {
-      trigger("keywords", { shouldFocus: true });
-      return;
-    }
-
     if (!token) return;
 
-    setLoadingOutline(true);
+    setOutlineLoading(true);
+    setFormDisabled(true);
+    setMainDisabled(true);
+    setSecondaryDisabled(true);
 
     try {
       const response = await chat({
@@ -79,7 +104,61 @@ export const OutlineInput = ({
       // Handle fetch request errors
     }
 
-    setLoadingOutline(false);
+    setOutlineLoading(false);
+    setFormDisabled(false);
+    setMainDisabled(false);
+    setSecondaryDisabled(false);
+  };
+
+  const onRegenerate = async () => {
+    if (!token || !selectedText.trim()) return;
+
+    setOutlineLoading(true);
+    setFormDisabled(true);
+    setMainDisabled(true);
+    setSecondaryDisabled(true);
+
+    try {
+      const response = await chat({
+        key: token,
+        model: settings.model.outline,
+        messages: [
+          {
+            role: "system",
+            content: outlineRegeneratePromptSystem
+          },
+          {
+            role: "user",
+            content: outlineRegeneratePrompt
+              .replace("{{section}}", selectedText)
+              .replace("{{outline}}", outline)
+              .replace(
+                "{{keywords}}",
+                `${keywords.main}\n${keywords.secondary}`
+              )
+          }
+        ]
+      });
+
+      if (response)
+        setValue("outline", outline.replace(selectedText, response));
+    } catch (error) {
+      // Handle fetch request errors
+    }
+
+    setOutlineLoading(false);
+    setFormDisabled(false);
+    setMainDisabled(false);
+    setSecondaryDisabled(false);
+  };
+
+  const onSelectText = () => {
+    if (!textareaRef.current) return;
+
+    const start = textareaRef.current.selectionStart;
+    const end = textareaRef.current.selectionEnd;
+    const text = textareaRef.current.value.substring(start, end);
+    setSelectedText(text);
   };
 
   return (
@@ -88,10 +167,10 @@ export const OutlineInput = ({
         <Label htmlFor="outline">Outline</Label>
 
         <SettingsMenu
-          loadingGenerate={loadingOutline || noKeywords}
+          loadingGenerate={
+            outlineLoading || outlineDisabled || !hasKeywords(keywords?.main)
+          }
           onGenerate={onGenerateOutline}
-          loadingRegenerate={true}
-          onRegenerate={() => {}}
           selectedModel={settings.model.outline}
           onModel={model => {
             const settingsCopy = structuredClone(settings);
@@ -110,14 +189,30 @@ export const OutlineInput = ({
         />
       </div>
 
-      <Textarea
-        disabled={!token || noKeywords}
-        id="outline"
-        placeholder="Introduction..."
-        loading={loadingOutline}
-        error={errors?.outline?.message}
-        {...register("outline")}
-      />
+      <ContextMenu>
+        <ContextMenuTrigger disabled={noKeywords}>
+          <Textarea
+            disabled={!token || noKeywords || outlineDisabled}
+            id="outline"
+            placeholder="Introduction..."
+            loading={outlineLoading}
+            error={errors?.outline?.message}
+            {...outlineProps}
+            onBlur={onSelectText}
+            ref={e => {
+              outlineRef(e);
+
+              textareaRef.current = e;
+            }}
+          />
+        </ContextMenuTrigger>
+        <ContextMenuContent>
+          <ContextMenuItem onClick={onRegenerate}>
+            <Rotate3d className="mr-2 h-4 w-4" />
+            <span>Regenerate</span>
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenu>
     </div>
   );
 };

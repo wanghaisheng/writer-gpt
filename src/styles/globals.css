@@ -74,12 +74,88 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1 {
+    @apply mb-6 text-3xl font-semibold;
+  }
+  h2 {
+    @apply mb-2 text-2xl font-semibold;
+  }
+  h3 {
+    @apply mb-2 text-xl font-semibold;
+  }
+  p {
+    @apply mb-4;
+  }
+  a {
+    @apply text-blue-800 hover:text-blue-800 dark:text-blue-800 dark:hover:text-blue-800;
+  }
+
+  ul,
+  ol {
+    @apply mb-3 list-disc pl-4;
+  }
+
+  table {
+    @apply w-full text-sm text-left text-gray-500 dark:text-slate-900 rounded-sm overflow-hidden;
+  }
+
+  table thead {
+    @apply text-xs text-gray-700 uppercase bg-blue-600 text-white;
+  }
+
+  table thead tr th {
+    @apply px-6 py-3;
+  }
+
+  table tbody tr {
+    @apply bg-white border-b dark:bg-transparent dark:border-slate-700;
+  }
+
+  table tbody tr th {
+    @apply px-6 py-4 font-medium text-slate-900 whitespace-nowrap dark:text-white;
+  }
+
+  table tbody tr td {
+    @apply px-6 py-4 dark:text-white;
   }
 }
 
 textarea::-webkit-scrollbar {
   display: none;
+}
+
+.heart-icon {
+  animation: heartAnimation 1.2s infinite;
+}
+
+@keyframes heartAnimation {
+  0% {
+    transform: scale(0.8);
+  }
+
+  5% {
+    transform: scale(0.9);
+  }
+
+  10% {
+    transform: scale(0.8);
+  }
+
+  15% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.8);
+  }
+
+  to {
+    transform: scale(0.8);
+  }
 }
