@@ -31,7 +31,7 @@ export const useSettings = create<Settings>()(
             main: "gpt-3.5-turbo",
             secondary: "gpt-3.5-turbo"
           },
-          outline: "gpt-4"
+          outline: "gpt-3.5-turbo"
         }
       },
       setSettings: settings => set({ settings })
