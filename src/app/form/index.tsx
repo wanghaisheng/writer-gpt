@@ -8,6 +8,7 @@ import {
   Circle,
   Copy,
   Heart,
+  Info,
   Loader2,
   ScrollText
 } from "lucide-react";
@@ -37,6 +38,7 @@ import { Separator } from "@components/ui/separator";
 
 import { chat } from "@lib/openai";
 
+import { HowToUse } from "./how-to";
 import { KeyWordsInputs } from "./inputs/keywords";
 import { OutlineInput } from "./inputs/outline";
 
@@ -61,6 +63,7 @@ export const Form = () => {
     formDisabled
   } = useDisabled();
 
+  const [howToDialog, setHowToDialog] = useState<boolean>(false);
   const [postContent, setPostContent] = useState<string>(``);
   const [failedSections, setFailedSections] = useState<PostSection[]>([]);
 
@@ -165,7 +168,17 @@ export const Form = () => {
           <Circle className="fill-blue-600 stroke-blue-600 mr-2" /> {title}
         </h1>
 
-        <ThemeSwitch />
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setHowToDialog(true)}
+          >
+            <Info className="w-4 h-4 mr-2" /> <span>How To</span>
+          </Button>
+
+          <ThemeSwitch />
+        </div>
       </div>
 
       <TokenForm />
@@ -234,6 +247,8 @@ export const Form = () => {
         Made with <Heart className="heart-icon fill-red-600 stroke-red-600" />{" "}
         in Albania
       </p>
+
+      <HowToUse open={howToDialog} setOpen={setHowToDialog} />
     </div>
   );
 };
