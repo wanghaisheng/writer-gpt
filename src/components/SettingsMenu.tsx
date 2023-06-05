@@ -1,5 +1,7 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
+
 import {
   Bot,
   Pencil,
@@ -9,7 +11,6 @@ import {
   Settings,
   Sparkle
 } from "lucide-react";
-import React, { useEffect, useState } from "react";
 
 import { Models } from "@interface/openai";
 
@@ -81,7 +82,7 @@ export const SettingsMenu = ({
   customPrompt,
   onPrompt
 }: Props) => {
-  const { token } = useToken();
+  const { token, isPro } = useToken();
 
   const [open, setOpen] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");

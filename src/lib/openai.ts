@@ -28,3 +28,15 @@ export const chat = async ({
     console.log((error as any).response.data.error.message);
   }
 };
+
+export const hasProAccount = async ({ apiKey }: { apiKey: string }) => {
+  const configuration = new Configuration({
+    apiKey
+  });
+
+  const openai = new OpenAIApi(configuration);
+
+  const modelsList = await openai.listModels();
+
+  return !!modelsList.data.data.find(model => model.id === ("gpt-4" as Models));
+};
