@@ -46,25 +46,12 @@ type Props = {
 export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
   const { token } = useToken();
   const { settings, setSettings } = useSettings();
-  const {
-    setFormLoading,
-    setMainLoading,
-    setOutlineLoading,
-    setSecondaryLoading,
-    formLoading,
-    mainLoading,
-    outlineLoading,
-    secondaryLoading
-  } = useLoading();
+  const { setOutlineLoading, outlineLoading } = useLoading();
   const {
     setFormDisabled,
     setMainDisabled,
-    setOutlineDisabled,
     setSecondaryDisabled,
-    formDisabled,
-    mainDisabled,
-    outlineDisabled,
-    secondaryDisabled
+    outlineDisabled
   } = useDisabled();
 
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
@@ -92,9 +79,7 @@ export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
         messages: [
           {
             role: "user",
-            content:
-              settings?.custom?.outline ??
-              outlinePrompt.replaceAll("{{keywords}}", keywords.main)
+            content: outlinePrompt.replaceAll("{{keywords}}", keywords.main)
           }
         ]
       });
@@ -178,14 +163,6 @@ export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
 
             setSettings(settingsCopy);
           }}
-          promptPlaceholder="Please write a creative outline..."
-          customPrompt={settings.custom.outline}
-          onPrompt={prompt => {
-            const settingsCopy = structuredClone(settings);
-            settingsCopy.custom.outline = prompt;
-
-            setSettings(settingsCopy);
-          }}
         />
       </div>
 
@@ -207,7 +184,10 @@ export const OutlineInput = ({ setValue, register, watch, errors }: Props) => {
           />
         </ContextMenuTrigger>
         <ContextMenuContent>
-          <ContextMenuItem onClick={onRegenerate}>
+          <ContextMenuItem
+            onClick={onRegenerate}
+            disabled={outlineDisabled || outlineLoading}
+          >
             <Rotate3d className="mr-2 h-4 w-4" />
             <span>Regenerate</span>
           </ContextMenuItem>
