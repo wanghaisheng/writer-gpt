@@ -13,3 +13,11 @@ export type PostStructure = {
   }[];
   conclusion: string;
 };
+
+export type CustomPrompt = {
+  value: string;
+  location: {
+    start: number;
+    end: number;
+  };
+};
