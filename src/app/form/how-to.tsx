@@ -13,7 +13,7 @@ type Props = {
 
 export const HowToUse = ({ open, setOpen }: Props) => (
   <Dialog open={open} onOpenChange={isOpen => setOpen(isOpen)}>
-    <DialogContent>
+    <DialogContent className="my-auto">
       <DialogHeader>
         <DialogTitle>Guide on How to Use.</DialogTitle>
       </DialogHeader>
