@@ -3,14 +3,7 @@
 import React, { useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  AlertTriangle,
-  Circle,
-  Copy,
-  Heart,
-  Loader2,
-  ScrollText
-} from "lucide-react";
+import { Copy, Heart, Loader2, ScrollText } from "lucide-react";
 import { useForm } from "react-hook-form";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -21,7 +14,6 @@ import {
   outlineToArraySystemPrompt,
   systemPrompt
 } from "@config/chat";
-import { title } from "@config/seo";
 
 import { PostSection } from "@interface/structure";
 
@@ -30,10 +22,9 @@ import { useLoading } from "@store/loading";
 import { useSettings } from "@store/settings";
 import { useToken } from "@store/token";
 
-import ThemeSwitch from "@components/ThemeSwitch";
+import Header from "@components/header";
 import { TokenForm } from "@components/Token";
 import { Button } from "@components/ui/button";
-import { Separator } from "@components/ui/separator";
 
 import { chat } from "@lib/openai";
 
@@ -160,13 +151,7 @@ export const Form = () => {
 
   return (
     <div className="flex flex-col w-full max-w-3xl gap-8 py-10">
-      <div className="flex items-center justify-between sm:justify-between gap-4">
-        <h1 className="text-2xl font-semibold flex items-center mb-0">
-          <Circle className="fill-blue-600 stroke-blue-600 mr-2" /> {title}
-        </h1>
-
-        <ThemeSwitch />
-      </div>
+      <Header />
 
       <TokenForm />
 

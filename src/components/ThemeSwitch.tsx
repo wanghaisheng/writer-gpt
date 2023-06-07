@@ -1,11 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { Laptop, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-
-import { SystemThemes, Themes } from "@interface/theme";
 
 import { Button, ButtonProps } from "@ui/button";
 
@@ -22,10 +20,13 @@ const ThemeSwitch = ({ className, ...props }: ButtonProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="w-9 px-0">
-          <Sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
+        <Button variant="ghost" size="sm">
+          <div className="relative flex items-center gap-2">
+            <Sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 w-4 h-4 mr-2" />
+            <Moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 w-4 h-4 mr-2" />
+            <span className="sr-only">Toggle theme</span>
+          </div>
+          <span className="w">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -36,10 +37,6 @@ const ThemeSwitch = ({ className, ...props }: ButtonProps) => {
         <DropdownMenuItem onClick={() => setTheme("dark")}>
           <Moon className="mr-2 h-4 w-4" />
           <span>Dark</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          <Laptop className="mr-2 h-4 w-4" />
-          <span>System</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

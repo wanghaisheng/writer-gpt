@@ -4,9 +4,6 @@ import { persist } from "zustand/middleware";
 import { Models } from "@interface/openai";
 
 type SettingsType = {
-  custom: {
-    outline?: string;
-  };
   model: {
     keywords: {
       main: Models;
@@ -25,7 +22,6 @@ export const useSettings = create<Settings>()(
   persist(
     set => ({
       settings: {
-        custom: {},
         model: {
           keywords: {
             main: "gpt-3.5-turbo",

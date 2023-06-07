@@ -1,16 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-import {
-  Bot,
-  Pencil,
-  Rotate3d,
-  RotateCcw,
-  Save,
-  Settings,
-  Sparkle
-} from "lucide-react";
+import { Bot, Settings, Sparkle } from "lucide-react";
 
 import { Models } from "@interface/openai";
 
@@ -29,26 +21,12 @@ import {
   DropdownMenuTrigger
 } from "@components/ui/dropdown-menu";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle
-} from "./ui/dialog";
-import { Textarea } from "./ui/textarea";
-
 type Props = {
   loadingGenerate?: boolean;
   onGenerate: () => void;
 
   selectedModel?: Models;
   onModel: (model: Models) => void;
-
-  promptPlaceholder?: string;
-  customPrompt?: string;
-  onPrompt?: (prompt?: string) => void;
 };
 
 export const SettingsMenu = ({
@@ -56,20 +34,9 @@ export const SettingsMenu = ({
   onGenerate,
 
   selectedModel,
-  onModel,
-
-  promptPlaceholder,
-  customPrompt,
-  onPrompt
+  onModel
 }: Props) => {
   const { token, isPro } = useToken();
-
-  const [open, setOpen] = useState<boolean>(false);
-  const [prompt, setPrompt] = useState<string>("");
-
-  useEffect(() => {
-    if (open) setPrompt(customPrompt ?? "");
-  }, [open]);
 
   const modelsList: {
     name: string;
@@ -130,59 +97,8 @@ export const SettingsMenu = ({
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
-
-          {onPrompt && (
-            <DropdownMenuItem onClick={() => setOpen(true)}>
-              <Pencil className="mr-2 h-4 w-4" />
-              <span>Prompt</span>
-            </DropdownMenuItem>
-          )}
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {onPrompt && (
-        <Dialog open={open} onOpenChange={state => setOpen(state)}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Change Prompt</DialogTitle>
-              <DialogDescription>
-                Type below your custom prompt.
-              </DialogDescription>
-            </DialogHeader>
-
-            <Textarea
-              value={prompt}
-              onChange={e => setPrompt(e.target.value)}
-              placeholder={promptPlaceholder ?? "Prompt..."}
-            />
-
-            <DialogFooter>
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  setPrompt("");
-                }}
-              >
-                <RotateCcw className="w-4 h-4 mr-2" />
-                <span>Reset</span>
-              </Button>
-              <Button
-                disabled={
-                  customPrompt === prompt ||
-                  (!customPrompt && prompt.trim().length === 0)
-                }
-                onClick={() => {
-                  onPrompt(prompt.trim().length > 0 ? prompt : undefined);
-                  setOpen(false);
-                }}
-              >
-                <Save className="w-4 h-4 mr-2" />
-                <span>Save Changes</span>
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
     </>
   );
 };
