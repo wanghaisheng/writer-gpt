@@ -10,9 +10,7 @@ export type RequestData = {
   model?: Models;
 };
 
-export const config = {
-  runtime: "edge"
-};
+export const runtime = "edge";
 
 export default async function handler(request: Request) {
   const { apiKey, messages, model } = (await request.json()) as RequestData;
