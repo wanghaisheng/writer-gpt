@@ -12,7 +12,7 @@ export type RequestData = {
 
 export const runtime = "edge";
 
-export const GET = async (request: Request) => {
+export const POST = async (request: Request) => {
   const { apiKey, messages, model } = (await request.json()) as RequestData;
 
   if (!apiKey?.trim())
