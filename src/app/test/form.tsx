@@ -5,12 +5,16 @@ import React, { useState } from "react";
 import { RequestData } from "@app/api/chat/route";
 import { Loader2 } from "lucide-react";
 
+import { useToken } from "@store/token";
+
 import { Button } from "@components/ui/button";
 import { Input } from "@components/ui/input";
 
 type Props = {};
 
 export const TestForm = (props: Props) => {
+  const { token } = useToken();
+
   const [prompt, setPrompt] = useState<string>("");
   const [response, setResponse] = useState<string[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,7 +24,16 @@ export const TestForm = (props: Props) => {
 
     setLoading(true);
 
-    const payload: RequestData = {};
+    const payload: RequestData = {
+      apiKey: token,
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      model: "gpt-3.5-turbo"
+    };
 
     const response = await fetch("/api/chat", {
       method: "POST",
