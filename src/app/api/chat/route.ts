@@ -12,15 +12,15 @@ export type RequestData = {
 
 export const runtime = "edge";
 
-export default async function handler(request: Request) {
+export const GET = async (request: Request) => {
   const { apiKey, messages, model } = (await request.json()) as RequestData;
 
   if (!apiKey?.trim())
     return new Response("Please provide api key!", { status: 400 });
   if (!messages?.length)
-    return new Response("Please provide api key!", { status: 400 });
+    return new Response("Please provide messages!", { status: 400 });
   if (!model?.trim())
-    return new Response("Please provide api key!", { status: 400 });
+    return new Response("Please provide model!", { status: 400 });
 
   const stream = await OpenAIStream({
     apiKey,
@@ -30,4 +30,4 @@ export default async function handler(request: Request) {
   });
 
   return new Response(stream);
-}
+};
