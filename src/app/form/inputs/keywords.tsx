@@ -178,7 +178,7 @@ export const KeyWordsInputs = ({
 
       <div className="flex flex-col gap-2 md:col-span-1">
         <div className="flex items-center justify-between">
-          <Label htmlFor="keywords">Secondary Keywords</Label>
+          <Label htmlFor="secKeywords">Secondary Keywords</Label>
 
           <SettingsMenu
             loadingGenerate={
@@ -197,7 +197,7 @@ export const KeyWordsInputs = ({
 
         <Textarea
           disabled={!token || secondaryDisabled}
-          id="keywords"
+          id="secKeywords"
           placeholder="Keyword 2..."
           error={errors?.keywords?.message}
           loading={secondaryLoading}

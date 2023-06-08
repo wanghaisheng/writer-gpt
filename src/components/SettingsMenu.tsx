@@ -63,7 +63,7 @@ export const SettingsMenu = ({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="xs">
+          <Button variant="ghost" size="xs" disabled={!token}>
             <Settings className="mr-2 h-4 w-4" /> Settings
           </Button>
         </DropdownMenuTrigger>
