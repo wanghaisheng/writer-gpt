@@ -10,10 +10,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "export": "next build && next export",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"./**/*.{ts,tsx,json}\"",
-    "serve": "npm run build && npm start"
+    "serve": "npm run export && npx serve out"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.0",
@@ -23,6 +24,11 @@
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
+    "@tiptap/extension-highlight": "^2.0.3",
+    "@tiptap/extension-typography": "^2.0.3",
+    "@tiptap/pm": "^2.0.3",
+    "@tiptap/react": "^2.0.3",
+    "@tiptap/starter-kit": "^2.0.3",
     "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "@types/node": "^20.2.5",
     "@types/react": "^18.2.7",

@@ -81,7 +81,7 @@
   }
 
   h1 {
-    @apply mb-6 text-3xl font-semibold;
+    @apply mb-4 text-3xl font-semibold;
   }
   h2 {
     @apply mb-2 text-2xl font-semibold;
@@ -89,9 +89,11 @@
   h3 {
     @apply mb-2 text-xl font-semibold;
   }
+
   p {
-    @apply mb-4;
+    @apply mb-0;
   }
+
   a {
     @apply text-blue-800 hover:text-blue-800 dark:text-blue-800 dark:hover:text-blue-800;
   }
