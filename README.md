@@ -1,4 +1,4 @@
-# 🤖 ChatGPT Article Writter
+# ✨🤖ChatGPT Article Writer🤖✨
 
 ## 🚀 Setup
 
